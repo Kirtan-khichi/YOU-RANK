@@ -1,5 +1,4 @@
 import React from 'react';
-<<<<<<< HEAD
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; 
 import Home from './components/Home';
 import Rankings from './components/Rankings';
@@ -26,22 +25,3 @@ const App = () => {
 };
 
 export default App;
-=======
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import FrontPage from './FrontPage';
-import RankingsPage from './RankingsPage';
-
-function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<FrontPage />} />
-        <Route path="/rankings" element={<RankingsPage />} />
-      </Routes>
-    </Router>
-  );
-}
-
-export default App;
-
->>>>>>> 372aa50575d2cdabe90d8bd7ef94cd3c5e1acc60
