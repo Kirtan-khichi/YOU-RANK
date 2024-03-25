@@ -187,23 +187,6 @@ body {
     padding: 10px;
   }
 
-  .sliders-container {
-    position: fixed;
-    left: -100%;
-    top: 0;
-    width: 80%;
-    max-width: 400px; /* Adjust as needed */
-    height: 100%;
-    background-color: #D9CDBF;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    transition: left 0.5s ease; /* Smooth transition */
-    z-index: 9999; /* Ensure it's above other elements */
-  }
-
-  .sliders-container.show {
-    left: 0;
-  }
 
   .table-container {
     width: 80%;
@@ -251,86 +234,40 @@ body {
 
   .show-sliders-mobile .button-text {
     white-space: nowrap; /* Ensure the text stays in one line */
-    transform: rotate(-90deg); /* Rotate the text back by -90 degrees to keep it readable */
-    color: #9E887D;
-  }
-
-  .submit-button {
-    background-color: #7C6C5D;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    cursor: pointer;
-    width: 100%;
-    text-align: center;
-  }
-
-  .submit-button:hover {
-    background-color: #9E887D;
-  }
-
-  .table-container tr:hover td {
-    background-color: #f1d0d0;
-  }
-
-  .show-sliders-mobile {
-    position: absolute;
-    left: 0;
-    width: 30px;
-    height: 100%;
-    top: 160px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #9E887D;
-    z-index: 9999; /* Ensure it's above other elements */
-  }
-
-  .show-sliders-mobile button {
-    width: 100%;
-    height: 100%;
-    background: none;
-    border: none;
-    padding: 0;
-    margin: 0;
-    cursor: pointer;
-    transform: rotate(-90deg); /* Rotate the button by 90 degrees */
-  }
-
-  .show-sliders-mobile .button-text {
-    white-space: nowrap; /* Ensure the text stays in one line */
-    transform: rotate(-90deg); /* Rotate the text back by -90 degrees to keep it readable */
+    transform: rotate(-90deg); /*
     color: #9E887D; /* Text color */
   }
 
-  .sliders-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-    /* backdrop-filter: blur(5px); Apply blur effect */
-    z-index: 9998; /* Ensure it's above other elements except sliders */
-  }
+  /* Add this CSS to handle slider animation */
+.sliders-container {
+  position: fixed;
+  left: -100%;
+  top: 0;
+  width: 80%;
+  max-width: 400px; /* Adjust as needed */
+  height: 100%;
+  background-color: #D9CDBF; /* Adjust background color as needed */
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  transition: left 0.5s ease; /* Smooth transition */
+  z-index: 9999; /* Ensure it's above other elements */
+  overflow-y: auto; /* Enable vertical scrolling */
+}
 
-  .sliders-container {
-    position: fixed;
-    left: -80%; /* Initially position off the screen */
-    top: 0;
-    width: 80%; /* Adjust as needed */
-    height: 100%;
-    background-color: #D9CDBF;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    overflow-y: auto; /* Enable vertical scrolling */
-    transition: left 0.5s ease; /* Smooth transition */
-    z-index: 9999; /* Ensure it's above other elements */
-  }
+.sliders-container.show {
+  left: 175px; /* Adjust the position as needed */
+}
 
-  /* Adjust position when sliders are shown */
-  .sliders-container.show {
-    left: 0; /* Slide in from the left */
-  }
+/* Add this CSS for the overlay */
+.show-sliders-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  z-index: 9998; /* Ensure it's above other elements except sliders */
+}
+
+  
 }

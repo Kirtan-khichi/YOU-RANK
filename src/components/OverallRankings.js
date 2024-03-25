@@ -27,9 +27,13 @@ const OverallRankings = () => {
   const [parameters, setParameters] = useState(initialParameters);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
   const [showSliders, setShowSliders] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [showSlidersButton, setShowSlidersButton] = useState(false); // State to track the visibility of the button
+  const [sliderAnimation, setSliderAnimation] = useState(false); // State to manage slider animation
 
   useEffect(() => {
     fetchData();
+    checkIfMobile();
   }, []);
 
   const fetchData = async () => {
@@ -82,6 +86,7 @@ const OverallRankings = () => {
       Total: calculateScore(ranking),
     })));
     setShowSliders(false);
+    setSliderAnimation(false); // Reset animation state
   };
 
   const requestSort = (key) => {
@@ -105,12 +110,29 @@ const OverallRankings = () => {
     }
   });
 
+  const checkIfMobile = () => {
+    setIsMobile(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+  };
+
+  // Function to toggle the visibility and trigger animation of sliders
+  const toggleSliders = () => {
+    setShowSliders(prev => !prev); // Toggle the state
+    setSliderAnimation(true); // Trigger animation
+  };
+
   return (
     <div className="overall-rankings">
+      {/* Show button for toggling sliders only on mobile devices */}
+      {isMobile && !showSlidersButton && (
+        <div className="show-sliders-mobile">
+          <button onClick={toggleSliders}>Show Sliders</button>
+        </div>
+      )}
       {/* Sliders container */}
-      {showSliders && (
-        <div className="sliders-overlay">
-          <div className="sliders-container">
+      {isMobile && showSliders && (
+        <div className={`sliders-container ${sliderAnimation ? 'show' : ''}`}>
+          <div className="sliders-overlay" onClick={toggleSliders}></div>
+          <div className="sliders-content">
             {Object.entries(initialParameters).map(([param, { weight, max }]) => (
               <div className="slider-item" key={param}>
                 <div className="slider-wrapper">
@@ -125,20 +147,16 @@ const OverallRankings = () => {
                     step="0.01"
                     value={parameters[param].weight}
                     onChange={(e) => handleSliderChange(param, e.target.value)}
-                    style={{ backgroundImage: `linear-gradient(to right, #8BC34A ${parameters[param].weight * 100}%, #f1d0d0 ${parameters[param].weight * 100}%)` }}
+                    style={{ backgroundImage: `linear-gradient(to right, #576D46 ${parameters[param].weight * 100}%, #FBFBFC ${parameters[param].weight * 100}%)` }}
                   />
                   <span className="slider-value">{parameters[param].weight}</span>
                 </div>
               </div>
             ))}
-            <button className="submit-button" onClick={applyScores}>Submit</button>
+            <button className="submit-button" onClick={applyScores}>Calculate Score</button>
           </div>
         </div>
       )}
-      {/* Button for toggling sliders */}
-      <div className="show-sliders-overlay" onClick={() => setShowSliders(!showSliders)}>
-        {showSliders ? 'Hide Sliders' : 'Show Sliders'}
-      </div>
       {/* Table container */}
       <div className="table-container">
         <h2 style={{ textAlign: 'center' }}>Rankings</h2>
@@ -147,35 +165,33 @@ const OverallRankings = () => {
             <tr>
               <th onClick={() => requestSort('Rank')}>
                 NIRF RANK {sortConfig.key === 'Rank' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : null}
-              </th>
-              <th onClick={() => requestSort('college')}>
-                College Name {sortConfig.key === 'college' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : null}
-              </th>
-              <th onClick={() => requestSort('Total')}>
-                Your Score {sortConfig.key === 'Total' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : null}
-              </th>
-              <th onClick={() => requestSort('your_score')}>
-                Nirf Score {sortConfig.key === 'your_score' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : null}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {sortedRankings.map((ranking, index) => (
-              <tr key={index}>
-                <td
-                >
-                {parseInt(ranking.Rank)}
-              </td>
-              <td>{ranking.college}</td>
-              <td>{ranking.Total || "-"}</td>
-              <td>{parseFloat(ranking.your_score).toFixed(2)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  </div>
-);
-};
-
-export default OverallRankings;
+                </th>
+                <th onClick={() => requestSort('college')}>
+                  College Name {sortConfig.key === 'college' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : null}
+                </th>
+                <th onClick={() => requestSort('Total')}>
+                  Your Score {sortConfig.key === 'Total' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : null}
+                </th>
+                <th onClick={() => requestSort('your_score')}>
+                  Nirf Score {sortConfig.key === 'your_score' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : null}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {sortedRankings.map((ranking, index) => (
+                <tr key={index}>
+                  <td>{parseInt(ranking.Rank)}</td>
+                  <td>{ranking.college}</td>
+                  <td>{ranking.Total || "-"}</td>
+                  <td>{parseFloat(ranking.your_score).toFixed(2)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  };
+  
+  export default OverallRankings;
+  
