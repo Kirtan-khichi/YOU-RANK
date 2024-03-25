@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; 
 import Home from './components/Home';
 import Rankings from './components/Rankings';
+import OverallRankings from './components/OverallRankings';
 import FileUpload from './components/FileUpload'; 
 import './components/styles.css'; // Import the CSS file
 import logo from './assets/youRankLogo.png'; // Import the image file
@@ -18,6 +19,7 @@ const App = () => {
           <Route path="/" element={<Home />} /> 
           <Route path="/rankings" element={<Rankings />} /> 
           <Route path="/upload" element={<FileUpload />} /> 
+          <Route path="/overallRankings" element={<OverallRankings />} /> 
         </Routes>
       </div>
     </Router>
