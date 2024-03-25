@@ -1,6 +1,6 @@
 body {
   font-family: Arial, sans-serif;
-  background: linear-gradient(180deg, #F8F6F6 0%, #F2EFED 0%);
+  background: linear-gradient(180deg, #F2EFED 0%, #F8F6F6 100%);
   margin: 0;
   padding: 0;
 }
@@ -53,7 +53,6 @@ body {
 .circular-button:hover {
   background-color: #f4c4c4;
 }
-
 
 .flex-container {
   display: flex;
@@ -138,6 +137,7 @@ body {
   cursor: pointer;
   width: 100%;
   text-align: center;
+  transition: background-color 0.3s;
 }
 
 .calculate-button:hover {
@@ -145,57 +145,34 @@ body {
 }
 
 .table-container {
-  position: absolute;
-  right: 20px;
-  width: 80%;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  overflow-x: auto;
+  position: relative; /* Change position to relative */
+  width: 100%;
+  max-height: calc(100vh - 200px); /* Adjust max-height based on your layout */
+  overflow: auto; /* Enable scrolling */
 }
 
-.table-container table {
+.table-wrapper {
+  overflow-x: auto; /* Enable horizontal scrolling */
+}
+
+.scroll-table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed; /* Ensure consistent column widths */
 }
 
-.table-container th,
-.table-container td {
-  padding: 8px;
-  border: 1px solid #ddd;
-  font-size: 14px;
-  background-color: #FBFBFC;
-  color: #333;
-  text-align: left;
-}
-
-.table-container th {
+/* Add this CSS to make the table header sticky */
+.scroll-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1; /* Ensure the header stays above the content */
   background-color: #e5e5e5;
-  color: #333;
-  font-weight: bold;
 }
 
-.table-container tr:nth-child(even) td {
-  background-color: #fff;
-}
-
-.table-container tr:hover td {
-  background-color: #f1d0d0;
-}
-
-.submit-button {
-  background-color: #7C6C5D;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 10px 20px;
-  cursor: pointer;
-  width: 100%;
-  text-align: center;
-}
-
-.submit-button:hover {
-  background-color: #9E887D;
+/* Add this CSS to hide the scrollbar when it's not needed */
+.table-container::-webkit-scrollbar {
+  width: 0; /* Hide scrollbar */
+  height: 0;
 }
 
 @media screen and (max-width: 768px) {
@@ -205,18 +182,44 @@ body {
     padding: 10px;
   }
 
-
   .table-container {
-    width: 80%;
-    margin-right: 0;
-    margin-left: 10px;
+    width: 100%;
+    margin-left: 10px; /* Shift the table towards the right */
     border-radius: 10px;
+    background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-height: calc(100vh - 50px); /* Set maximum height (minus header height) */
+    overflow: auto; /* Enable vertical scrolling */
+    position: relative; /* Add relative positioning */
   }
 
-  .table-container {
-    overflow-x: scroll;
+  .table-container table {
+    width: 100%;
   }
+
+  .table-container thead {
+    position: sticky; /* Make the header sticky */
+    top: 0;
+    /* background-color: #FBFBFC; Header background color */
+    z-index: 1; /* Ensure the header stays above content */
+    color: #D9D9D9;
+  }
+
+  .table-container th,
+  .table-container td {
+    padding: 8px;
+    border: 1px solid #F5F5F5;
+    font-size: 14px;
+    color: #333;
+    text-align: left;
+  }
+
+  .table-container th:nth-child(2), /* Adjust the index according to your table structure */
+  .table-container td:nth-child(2) {
+    /* Increase the width of the first column */
+    width: 40%; /* Adjust the width as needed */
+  }
+
 
   .slider-label {
     text-align: center;
@@ -229,20 +232,22 @@ body {
   .show-sliders-mobile {
     position: absolute;
     left: 0;
-    width: 30px; 
-    height: 100%; 
-    top: 160px; 
+    width: 30px;
+    height: 92vh;
+    top: 132px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #9E887D;
+    background-color: #D9CDBF;
+    border-radius: 8px;
     z-index: 9999; /* Ensure it's above other elements */
   }
 
   .show-sliders-mobile button {
     width: 100%;
     height: 100%;
-    background: none; 
+    background: none;
+    color: #201B17;
     border: none;
     padding: 0;
     margin: 0;
@@ -251,41 +256,69 @@ body {
   }
 
   .show-sliders-mobile .button-text {
-    white-space: nowrap; /* Ensure the text stays in one line */
-    transform: rotate(-90deg); /*
-    color: #9E887D; /* Text color */
+    white-space: nowrap; 
+    transform: rotate(90deg); 
+    color: #fff;
+  }
+
+  .show-sliders-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(232, 26, 26, 0.5); /* Semi-transparent background */
+    z-index: 9998; /* Ensure it's above other elements except sliders */
+
+    filter: blur(5px); /* Apply blur effect to the background */
+    
   }
 
   /* Add this CSS to handle slider animation */
-.sliders-container {
-  position: fixed;
-  left: -100%;
-  top: 0;
-  width: 80%;
-  max-width: 400px; /* Adjust as needed */
-  height: 100%;
-  background-color: #D9CDBF; /* Adjust background color as needed */
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  transition: left 0.5s ease; /* Smooth transition */
-  z-index: 9999; /* Ensure it's above other elements */
-  overflow-y: auto; /* Enable vertical scrolling */
-}
+  .sliders-container {
+    position: fixed;
+    top: 5px;
+    left: calc(55% - 10px); /* Adjust the left position to be 25% of the viewport width */
+    width: 75%; /* Set the width to cover 75% of the viewport */
+    height: 75vh; /* Set the height to cover the entire viewport */
+    background-color: #D9CDBF;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: left 5s ease; /* Smooth transition */
+    z-index: 9999;
+    overflow-y: auto; /* Enable vertical scrolling if needed */
+  }
+  
 
-.sliders-container.show {
-  left: 175px; /* Adjust the position as needed */
-}
+  .sliders-container.show {
+    left: calc(40% - 10px);
+    top: 150px; /* Adjust the position as needed */
+  }
+  .table-container.blurred {
+    filter: blur(5px); /* Apply blur effect to the table */
+  }
 
-/* Add this CSS for the overlay */
-.show-sliders-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-  z-index: 9998; /* Ensure it's above other elements except sliders */
-}
+  .submit-button {
+    background-color: #7C6C5D;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+  }
 
+  .search-bar {
+    display: flex;
+    justify-content: center; /* Center the search bar horizontally */
+    align-items: center;
+    border-radius: 15px;
+    /* padding-left: 50px; */
+    /* width: 90%; */
+    margin-left: 25%;
+    margin-bottom: 5%;
+    border-color: #fff;
+  }
   
 }

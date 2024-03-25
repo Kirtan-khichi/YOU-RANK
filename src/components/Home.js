@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import overallRankingIcon from '../assets/Overall_WL.png'; // Import the image file
+import overallRankingIcon from '../assets/Overall_WL.png'; 
 
 const Home = () => {
   return (
@@ -18,7 +18,7 @@ const Home = () => {
           <img src={overallRankingIcon} alt="Overall Rankings" style={{ width: '80px', height: '80px', borderRadius: '50%', border: '2px solid #000', padding: '5px', marginBottom: '10px' }} />
         </Link>
         <br />
-        <Link to="/overallRankings">Overall Rankings</Link>
+        <div style={{ color: '#605746' }}>Overall Rankings</div>
       </div>
     </div>
   );

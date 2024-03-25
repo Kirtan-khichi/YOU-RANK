@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import Papa from 'papaparse';
 import './styles.css';
 
@@ -28,8 +27,9 @@ const OverallRankings = () => {
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
   const [showSliders, setShowSliders] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [showSlidersButton, setShowSlidersButton] = useState(false); // State to track the visibility of the button
-  const [sliderAnimation, setSliderAnimation] = useState(false); // State to manage slider animation
+  const [showSlidersButton, setShowSlidersButton] = useState(false);
+  const [sliderAnimation, setSliderAnimation] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     fetchData();
@@ -86,7 +86,7 @@ const OverallRankings = () => {
       Total: calculateScore(ranking),
     })));
     setShowSliders(false);
-    setSliderAnimation(false); // Reset animation state
+    setSliderAnimation(false);
   };
 
   const requestSort = (key) => {
@@ -97,7 +97,11 @@ const OverallRankings = () => {
     setSortConfig({ key, direction });
   };
 
-  const sortedRankings = [...rankings].sort((a, b) => {
+  const filteredRankings = rankings.filter(ranking => {
+    return ranking.college.toLowerCase().includes(searchTerm.toLowerCase());
+  });
+
+  const sortedFilteredRankings = [...filteredRankings].sort((a, b) => {
     const keyA = a[sortConfig.key];
     const keyB = b[sortConfig.key];
     if (keyA === undefined || keyB === undefined) {
@@ -109,26 +113,28 @@ const OverallRankings = () => {
       return sortConfig.direction === 'ascending' ? keyA.localeCompare(keyB) : keyB.localeCompare(keyA);
     }
   });
+  
 
   const checkIfMobile = () => {
     setIsMobile(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
   };
 
-  // Function to toggle the visibility and trigger animation of sliders
   const toggleSliders = () => {
-    setShowSliders(prev => !prev); // Toggle the state
-    setSliderAnimation(true); // Trigger animation
+    setShowSliders(prev => !prev);
+    setSliderAnimation(true);
+  };
+
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
   };
 
   return (
     <div className="overall-rankings">
-      {/* Show button for toggling sliders only on mobile devices */}
       {isMobile && !showSlidersButton && (
         <div className="show-sliders-mobile">
-          <button onClick={toggleSliders}>Show Sliders</button>
+          <button onClick={toggleSliders}>Change Parameters</button>
         </div>
       )}
-      {/* Sliders container */}
       {isMobile && showSliders && (
         <div className={`sliders-container ${sliderAnimation ? 'show' : ''}`}>
           <div className="sliders-overlay" onClick={toggleSliders}></div>
@@ -157,13 +163,20 @@ const OverallRankings = () => {
           </div>
         </div>
       )}
-      {/* Table container */}
-      <div className="table-container">
-        <h2 style={{ textAlign: 'center' }}>Rankings</h2>
-        <table>
-          <thead>
-            <tr>
-              <th onClick={() => requestSort('Rank')}>
+      <div className={`table-container ${showSliders ? 'blur' : ''}`}>
+        <h6 style={{ textAlign: 'center'}}>choose whats important for you </h6>
+        <input
+          type="text"
+          placeholder="Search college"
+          value={searchTerm}
+          onChange={handleSearch}
+          className="search-bar"
+        />
+        <div className="table-wrapper">
+          <table className="scroll-table">
+            <thead>
+              <tr>
+                <th onClick={() => requestSort('Rank')}>
                 NIRF RANK {sortConfig.key === 'Rank' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : null}
                 </th>
                 <th onClick={() => requestSort('college')}>
@@ -178,20 +191,21 @@ const OverallRankings = () => {
               </tr>
             </thead>
             <tbody>
-              {sortedRankings.map((ranking, index) => (
-                <tr key={index}>
-                  <td>{parseInt(ranking.Rank)}</td>
-                  <td>{ranking.college}</td>
-                  <td>{ranking.Total || "-"}</td>
-                  <td>{parseFloat(ranking.your_score).toFixed(2)}</td>
-                </tr>
-              ))}
+                {sortedFilteredRankings.map((ranking, index) => (
+                    <tr key={index}>
+                    <td>{parseInt(ranking.Rank)}</td>
+                    <td>{ranking.college}</td>
+                    <td>{ranking.Total || "-"}</td>
+                    <td>{parseFloat(ranking.your_score).toFixed(2)}</td>
+                    </tr>
+                ))}
             </tbody>
           </table>
         </div>
       </div>
-    );
-  };
-  
-  export default OverallRankings;
-  
+    </div>
+  );
+};
+
+export default OverallRankings;
+
