@@ -130,12 +130,12 @@ const OverallRankings = () => {
 
   return (
     <div className="overall-rankings">
-      {isMobile && !showSlidersButton && (
+      {!showSlidersButton && (
         <div className="show-sliders-mobile">
           <button onClick={toggleSliders}>Change Parameters</button>
         </div>
       )}
-      {isMobile && showSliders && (
+      {showSliders && (
         <div className={`sliders-container ${sliderAnimation ? 'show' : ''}`}>
           <div className="sliders-overlay" onClick={toggleSliders}></div>
           <div className="sliders-content">
@@ -185,18 +185,18 @@ const OverallRankings = () => {
                 <th onClick={() => requestSort('Total')}>
                   Your Score {sortConfig.key === 'Total' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : null}
                 </th>
-                <th onClick={() => requestSort('your_score')}>
-                  Nirf Score {sortConfig.key === 'your_score' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : null}
+                <th onClick={() => requestSort('Score')}>
+                  Nirf Score {sortConfig.key === 'Score' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : null}
                 </th>
               </tr>
             </thead>
             <tbody>
                 {sortedFilteredRankings.map((ranking, index) => (
                     <tr key={index}>
-                    <td>{parseInt(ranking.Rank)}</td>
-                    <td>{ranking.college}</td>
-                    <td>{ranking.Total || "-"}</td>
-                    <td>{parseFloat(ranking.your_score).toFixed(2)}</td>
+                    <td style={ {textAlign: 'center' }}>{parseInt(ranking.Rank)}</td>
+                    <td style={ {textAlign: 'center' }}>{ranking.college}</td>
+                    <td style={ {textAlign: 'center' }}>{ranking.Total || "-"}</td>
+                    <td style={ {textAlign: 'center' }}>{parseFloat(ranking.Score).toFixed(2)}</td>
                     </tr>
                 ))}
             </tbody>

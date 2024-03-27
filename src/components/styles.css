@@ -244,15 +244,15 @@ body {
   }
 
   .show-sliders-mobile button {
-    width: 100%;
-    height: 100%;
+    width: 500px;
+    height: 30px;
     background: none;
     color: #201B17;
     border: none;
     padding: 0;
     margin: 0;
     cursor: pointer;
-    transform: rotate(-90deg); /* Rotate the button by 90 degrees */
+    transform: rotate(-90deg); 
   }
 
   .show-sliders-mobile .button-text {
@@ -321,4 +321,176 @@ body {
     border-color: #fff;
   }
   
+}
+
+@media screen and (min-width: 769px) {
+  /* For laptop/desktop view */
+  
+
+/* Table container */
+.table-container {
+  width: 80%;
+  margin: 20px auto;
+  max-height: calc(100vh - 200px);
+  overflow: auto;
+  position: relative;
+  border-radius: 10px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adding a 3D effect */
+  padding: 10px; /* Making padding smaller */
+
+}
+
+/* Table */
+.scroll-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  /* border: 1px solid #ccc;  */
+
+}
+
+.scroll-table thead {
+  /* position: sticky; */
+  /* border-radius: 5px; */
+  border-radius: 10px 10px 0 0;
+
+}
+
+/* Table header */
+.scroll-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: #e5e5e5;
+  /* border: 1px solid #ccc; */
+  border-radius: 10px 10px 0 0;
+
+}
+
+/* Table cells */
+.scroll-table th {
+  padding: 8px;
+
+}
+.scroll-table td {
+  padding: 10px;
+  border: 1.5px solid #D9D9D9; 
+
+}
+
+/* Search bar */
+.search-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 15px;
+  margin: 20px auto; /* Centering the search bar */
+  border: 1px solid #ccc; /* Adding border to the search bar */
+  padding: 10px;
+  width: 80%; /* Adjusting width */
+}
+
+.search-bar input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  border-radius: 5px;
+  border: none;
+  font-size: 16px;
+  box-sizing: border-box;
+  outline: none; /* Removing outline */
+}
+
+/* Submit button */
+.submit-button {
+  background-color: #7C6C5D;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+  margin-top: 10px;
+}
+
+/* Show sliders button for desktop */
+.show-sliders-desktop {
+  position: fixed;
+  right: 20px; /* Adjust the position as needed */
+  bottom: 20px; /* Adjust the position as needed */
+  z-index: 9999; /* Ensure it's above other elements */
+}
+
+.show-sliders-desktop button {
+  background-color: #605746;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.show-sliders-desktop button:hover {
+  background-color: #4a4038;
+}
+
+.sliders-container {
+  position: fixed;
+  top: 50px; /* Adjust the top position as needed */
+  left: 50%; /* Center the sliders horizontally */
+  transform: translateX(-50%);
+  width: 75%; /* Set the width to cover 75% of the viewport */
+  height: 75vh; /* Set the height to cover the entire viewport */
+  background-color: #D9CDBF;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  transition: left 1s ease; /* Smooth transition */
+  z-index: 9999;
+  overflow-y: auto; /* Enable vertical scrolling if needed */
+  scrollbar-width: none; /* Hide the scrollbar for Firefox */
+
+}
+
+.sliders-container.show {
+  left: 50%; /* Center the sliders horizontally */
+  transform: translateX(-50%);
+  top: 150px; /* Adjust the top position as needed */
+
+}
+
+.sliders-overlay{
+  backdrop-filter: blur(10px); /* Adjust the blur radius as needed */
+
+}
+
+.show-sliders-mobile {
+  position: absolute;
+  /* position: center; */
+  margin-left: calc(35% - 26%);
+  width: 80%;
+  height: 20px;
+  top: 132px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* background-color: #D9CDBF; */
+  border-radius: 8px;
+  z-index: 9999; /* Ensure it's above other elements */
+}
+
+.show-sliders-mobile button {
+  width: 80%;
+  background-color: #D9CDBF;
+  border-radius: 8px;
+  /* border-color: none; */
+  border: none; /* Remove border */
+
+}
+
+/* .overall-rankings {
+  backdrop-filter: blur(); 
+} */
+
 }

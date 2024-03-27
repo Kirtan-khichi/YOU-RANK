@@ -131,12 +131,12 @@ const LawRanking = () => {
 
   return (
     <div className="overall-rankings">
-      {isMobile && !showSlidersButton && (
+      {!showSlidersButton && (
         <div className="show-sliders-mobile">
           <button onClick={toggleSliders}>Change Parameters</button>
         </div>
       )}
-      {isMobile && showSliders && (
+      {showSliders && (
         <div className={`sliders-container ${sliderAnimation ? 'show' : ''}`}>
           <div className="sliders-overlay" onClick={toggleSliders}></div>
           <div className="sliders-content">
@@ -194,10 +194,10 @@ const LawRanking = () => {
             <tbody>
                 {sortedFilteredRankings.map((ranking, index) => (
                     <tr key={index}>
-                    <td>{parseInt(ranking.Rank)}</td>
-                    <td>{ranking.college}</td>
-                    <td>{ranking.Total || "-"}</td>
-                    <td>{parseFloat(ranking.Score).toFixed(2)}</td>
+                    <td style={ {textAlign: 'center' }}>{parseInt(ranking.Rank)}</td>
+                    <td style={ {textAlign: 'center' }}>{ranking.college}</td>
+                    <td style={ {textAlign: 'center' }}>{ranking.Total || "-"}</td>
+                    <td style={ {textAlign: 'center' }}>{parseFloat(ranking.Score).toFixed(2)}</td>
                     </tr>
                 ))}
             </tbody>
