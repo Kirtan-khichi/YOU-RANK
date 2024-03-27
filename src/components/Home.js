@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import overallRankingIcon from '../assets/Overall_WL.png'; 
 import Medical from '../assets/Medical.png'; 
+import Law from '../assets/Law_WL.png'; 
 
 const Home = () => {
   return (
@@ -12,7 +13,7 @@ const Home = () => {
         with your own rankings.
       </p>
       <p>
-        Navigate to the <strong>Rankings</strong> page to view the rankings.
+        To see the Rankings click on the circle of the particular field.
       </p>
       <div style={{ textAlign: 'center', marginTop: '20px' }}>
         <Link to="/overallRankings">
@@ -27,6 +28,14 @@ const Home = () => {
         </Link>
         <br />
         <div style={{ color: '#605746' }}>Medical Rankings</div>
+      </div>
+
+      <div style={{ textAlign: 'center', marginTop: '20px' }}>
+        <Link to="/LawRanking">
+          <img src={Law} alt="Law Rankings" style={{ width: '80px', height: '80px', borderRadius: '50%', border: '2px solid #000', padding: '5px', marginBottom: '10px' }} />
+        </Link>
+        <br />
+        <div style={{ color: '#605746' }}>Law Rankings</div>
       </div>
     </div>
   );
