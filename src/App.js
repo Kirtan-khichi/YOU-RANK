@@ -5,6 +5,7 @@ import Rankings from './components/Rankings';
 import OverallRankings from './components/OverallRankings';
 import MedicalRankings from './components/MedicalRankings';
 import LawRanking from './components/LawRanking';
+import EngineeringRanking from './components/EngineeringRanking';
 import FileUpload from './components/FileUpload'; 
 import './components/styles.css'; // Import the CSS file
 import logo from './assets/youRankLogo.png'; // Import the image file
@@ -24,6 +25,7 @@ const App = () => {
           <Route path="/overallRankings" element={<OverallRankings />} /> 
           <Route path="/MedicalRankings" element={<MedicalRankings />} /> 
           <Route path="/LawRanking" element={<LawRanking />} /> 
+          <Route path="/EngineeringRanking" element={<EngineeringRanking />} /> 
         </Routes>
       </div>
     </Router>
