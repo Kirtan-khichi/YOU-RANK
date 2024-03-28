@@ -244,21 +244,24 @@ body {
   }
 
   .show-sliders-mobile button {
-    width: 500px;
-    height: 30px;
+    /* width: 100%; */
+    /* height: 100%; */
     background: none;
-    color: #201B17;
+    /* color: #201B17; */
     border: none;
     padding: 0;
     margin: 0;
     cursor: pointer;
-    transform: rotate(-90deg); 
+    /* transform: rotate(-90deg);  */
   }
 
   .show-sliders-mobile .button-text {
+    width: 200px;
+    height: 35px;
     white-space: nowrap; 
-    transform: rotate(90deg); 
-    color: #fff;
+    transform: rotate(-90deg); 
+
+    /* color: #fff; */
   }
 
   .show-sliders-overlay {
@@ -307,6 +310,7 @@ body {
     cursor: pointer;
     width: 100%;
     text-align: center;
+
   }
 
   .backButton {
@@ -387,6 +391,12 @@ body {
 
 }
 
+.table-container th:nth-child(2), /* Adjust the index according to your table structure */
+  .table-container td:nth-child(2) {
+    /* Increase the width of the first column */
+    width: 40%; /* Adjust the width as needed */
+  }
+
 /* Search bar */
 .search-bar {
   display: flex;
@@ -452,7 +462,7 @@ body {
   width: 75%; /* Set the width to cover 75% of the viewport */
   height: 75vh; /* Set the height to cover the entire viewport */
   background-color: #D9CDBF;
-  border-radius: 10px;
+  border-radius: 15px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   transition: left 1s ease; /* Smooth transition */
   z-index: 9999;
@@ -466,6 +476,7 @@ body {
   transform: translateX(-50%);
   top: 150px; /* Adjust the top position as needed */
 
+
 }
 
 .sliders-overlay{
@@ -474,17 +485,17 @@ body {
 }
 
 .show-sliders-mobile {
-  position: absolute;
+  position: fixed;
   /* position: center; */
   margin-left: calc(35% - 26%);
   width: 80%;
-  height: 20px;
-  top: 132px;
+  height: 30px;
+  top: 122px;
   display: flex;
   align-items: center;
   justify-content: center;
   /* background-color: #D9CDBF; */
-  border-radius: 8px;
+  border-radius: 15px;
   z-index: 9999; /* Ensure it's above other elements */
 }
 
@@ -496,6 +507,14 @@ body {
   border: none; /* Remove border */
 
 }
+
+.backButton {
+  /* background-color: #7C6C5D;    */
+  /* Adjust the left position to be 25% of the viewport width */
+  /* /* width: 100% */
+  border-radius: 10px;
+  border:none
+} 
 
 /* .overall-rankings {
   backdrop-filter: blur(); 

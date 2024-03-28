@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Papa from 'papaparse';
 import './styles.css';
 
@@ -28,13 +28,17 @@ const LawRanking = () => {
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
   const [showSliders, setShowSliders] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [showSlidersButton, setShowSlidersButton] = useState(false);
   const [sliderAnimation, setSliderAnimation] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const slidersRef = useRef(null);
 
   useEffect(() => {
     fetchData();
     checkIfMobile();
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
 
   const fetchData = async () => {
@@ -75,17 +79,19 @@ const LawRanking = () => {
   };
 
   const handleSliderChange = (param, value) => {
-    setParameters(prev => ({
+    setParameters((prev) => ({
       ...prev,
       [param]: { ...prev[param], weight: parseFloat(value) },
     }));
   };
 
   const applyScores = () => {
-    setRankings(rankings.map(ranking => ({
-      ...ranking,
-      Total: calculateScore(ranking),
-    })));
+    setRankings(
+      rankings.map((ranking) => ({
+        ...ranking,
+        Total: calculateScore(ranking),
+      }))
+    );
     setShowSliders(false);
     setSliderAnimation(false);
   };
@@ -98,7 +104,7 @@ const LawRanking = () => {
     setSortConfig({ key, direction });
   };
 
-  const filteredRankings = rankings.filter(ranking => {
+  const filteredRankings = rankings.filter((ranking) => {
     return ranking.college.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
@@ -114,14 +120,15 @@ const LawRanking = () => {
       return sortConfig.direction === 'ascending' ? keyA.localeCompare(keyB) : keyB.localeCompare(keyA);
     }
   });
-  
 
   const checkIfMobile = () => {
-    setIsMobile(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+    setIsMobile(
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    );
   };
 
   const toggleSliders = () => {
-    setShowSliders(prev => !prev);
+    setShowSliders((prev) => !prev);
     setSliderAnimation(true);
   };
 
@@ -129,21 +136,33 @@ const LawRanking = () => {
     setSearchTerm(e.target.value);
   };
 
+  const handleClickOutside = (event) => {
+    if (slidersRef.current && !slidersRef.current.contains(event.target)) {
+      setShowSliders(false);
+      setSliderAnimation(false);
+    }
+  };
+
   return (
     <div className="overall-rankings">
-      {!showSlidersButton && (
+      {(
         <div className="show-sliders-mobile">
-          <button onClick={toggleSliders}>Change Parameters</button>
+          <button onClick={toggleSliders} className='button-text'>Change Parameters</button>
         </div>
       )}
       {showSliders && (
-        <div className={`sliders-container ${sliderAnimation ? 'show' : ''}`}>
+        <div className={`sliders-container ${sliderAnimation ? 'show' : ''}`} ref={slidersRef}>
           <div className="sliders-overlay" onClick={toggleSliders}></div>
+          <button className="backButton" onClick={toggleSliders}>
+            <span style={{ fontSize: '24px' }}>&larr;</span> Back
+          </button>
           <div className="sliders-content">
             {Object.entries(initialParameters).map(([param, { weight, max }]) => (
               <div className="slider-item" key={param}>
                 <div className="slider-wrapper">
-                  <label className="slider-label" htmlFor={`${param}-weight`}>{param}</label>
+                  <label className="slider-label" htmlFor={`${param}-weight`}>
+                    {param}
+                  </label>
                   <input
                     className="slider"
                     type="range"
@@ -154,18 +173,24 @@ const LawRanking = () => {
                     step="0.01"
                     value={parameters[param].weight}
                     onChange={(e) => handleSliderChange(param, e.target.value)}
-                    style={{ backgroundImage: `linear-gradient(to right, #576D46 ${parameters[param].weight * 100}%, #FBFBFC ${parameters[param].weight * 100}%)` }}
+                    style={{
+                      backgroundImage: `linear-gradient(to right, #576D46 ${parameters[
+                        param
+                      ].weight * 100}%, #FBFBFC ${parameters[param].weight * 100}%)`,
+                    }}
                   />
                   <span className="slider-value">{parameters[param].weight}</span>
                 </div>
               </div>
             ))}
-            <button className="submit-button" onClick={applyScores}>Calculate Score</button>
+            <button className="submit-button" onClick={applyScores}>
+              Calculate Score
+            </button>
           </div>
         </div>
       )}
-      <div className={`table-container ${showSliders ? 'blur' : ''}`}>
-        <h6 style={{ textAlign: 'center'}}>choose whats important for you </h6>
+      <div className={`table-container ${showSliders ? '-blur' : ''}`}>
+        <h4 style={{ textAlign: 'center' }}>Choose what's important for you </h4>
         <input
           type="text"
           placeholder="Search college"
@@ -178,7 +203,7 @@ const LawRanking = () => {
             <thead>
               <tr>
                 <th onClick={() => requestSort('Rank')}>
-                NIRF RANK {sortConfig.key === 'Rank' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : null}
+                  NIRF RANK {sortConfig.key === 'Rank' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : null}
                 </th>
                 <th onClick={() => requestSort('college')}>
                   College Name {sortConfig.key === 'college' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : null}
@@ -192,14 +217,14 @@ const LawRanking = () => {
               </tr>
             </thead>
             <tbody>
-                {sortedFilteredRankings.map((ranking, index) => (
-                    <tr key={index}>
-                    <td style={ {textAlign: 'center' }}>{parseInt(ranking.Rank)}</td>
-                    <td style={ {textAlign: 'center' }}>{ranking.college}</td>
-                    <td style={ {textAlign: 'center' }}>{ranking.Total || "-"}</td>
-                    <td style={ {textAlign: 'center' }}>{parseFloat(ranking.Score).toFixed(2)}</td>
-                    </tr>
-                ))}
+              {sortedFilteredRankings.map((ranking, index) => (
+                <tr key={index}>
+                  <td style={{ textAlign: 'center' }}>{parseInt(ranking.Rank)}</td>
+                  <td style={{ textAlign: 'center' }}>{ranking.college}</td>
+                  <td style={{ textAlign: 'center' }}>{ranking.Total || "-"}</td>
+                  <td style={{ textAlign: 'center' }}>{parseFloat(ranking.Score).toFixed(2)}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
@@ -209,4 +234,5 @@ const LawRanking = () => {
 };
 
 export default LawRanking;
+
 

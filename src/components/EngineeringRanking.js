@@ -147,14 +147,14 @@ const EngineeringRanking = () => {
     <div className="overall-rankings">
       {(
         <div className="show-sliders-mobile">
-          <button onClick={toggleSliders}>Change Parameters</button>
+          <button onClick={toggleSliders} className='button-text'>Change Parameters</button>
         </div>
       )}
       {showSliders && (
         <div className={`sliders-container ${sliderAnimation ? 'show' : ''}`} ref={slidersRef}>
           <div className="sliders-overlay" onClick={toggleSliders}></div>
           <button className="backButton" onClick={toggleSliders}>
-            &larr; Back
+            <span style={{ fontSize: '24px' }}>&larr;</span> Back
           </button>
           <div className="sliders-content">
             {Object.entries(initialParameters).map(([param, { weight, max }]) => (

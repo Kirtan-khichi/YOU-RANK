@@ -7,16 +7,16 @@ import MedicalRankings from './components/MedicalRankings';
 import LawRanking from './components/LawRanking';
 import EngineeringRanking from './components/EngineeringRanking';
 import FileUpload from './components/FileUpload'; 
-import './components/styles.css'; // Import the CSS file
-import logo from './assets/youRankLogo.png'; // Import the image file
+import './components/styles.css'; 
+import logo from './assets/youRankLogo.png'; 
 
 const App = () => {
   return (
     <Router>
       <div className="app-container">
         <div className="app-header">
-          <img src={logo} alt="Logo" className="app-logo" /> {/* Insert the image */}
-          <h1 className="app-title">Yourank</h1>
+          <img src={logo} alt="Logo" className="app-logo" /> 
+          <h1 className="app-title">U-rank</h1>
         </div>
         <Routes> 
           <Route path="/" element={<Home />} /> 

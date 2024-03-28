@@ -9,9 +9,9 @@ import './Home.css';
 const Home = () => {
   return (
     <div>
-      <h2 style={{textAlign:'center'}}>Welcome to Yourank</h2>
+      <h2 style={{textAlign:'center'}}>Welcome to U-rank</h2>
       <p style={{textAlign:'center'}}>
-        Yourank is a platform where you can view NIRF rankings and compare them
+        U-rank is a platform where you can view NIRF rankings and compare them
         with your own rankings.
       </p>
       <p style={{textAlign:'center'}}>
