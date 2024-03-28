@@ -131,6 +131,8 @@ const EngineeringRanking = () => {
     setSearchTerm(e.target.value);
   };
 
+  console.log("gvygbhubhubhunjnj", `table-container${showSliders ? '-blur' : ''}`);
+
   return (
     <div className="overall-rankings">
       {(
@@ -209,7 +211,7 @@ const EngineeringRanking = () => {
           </div>
         </div>
       )}
-      <div className={`table-container ${showSliders ? 'blur' : ''}`}>
+      <div className={`table-container ${showSliders ? '-blur' : ''}`}>
         <h4 style={{ textAlign: 'center' }}>Choose what's important for you </h4>
         <input
           type="text"

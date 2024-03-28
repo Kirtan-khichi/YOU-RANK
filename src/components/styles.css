@@ -294,12 +294,12 @@ body {
     left: calc(40% - 10px);
     top: 150px; /* Adjust the position as needed */
   }
-  .table-container.blurred {
-    filter: blur(5px); /* Apply blur effect to the table */
+  .table-container-blur {
+    background-color: black; /* Apply blur effect to the table */
   }
 
   .submit-button {
-    background-color: #7C6C5D;
+    background-color: #7C6C5D;    
     color: white;
     border: none;
     border-radius: 5px;
