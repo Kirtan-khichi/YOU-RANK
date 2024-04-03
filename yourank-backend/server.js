@@ -1,109 +1,61 @@
+require('dotenv').config();
+
+// console.log(process.env.MONGODB_URL);
 const express = require('express');
-const { Pool } = require('pg');
-const csv = require('csv-parser');
-const fs = require('fs');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const app = express();
-const port = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5000;
 
 app.use(cors());
+app.use(bodyParser.json());
 
-const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'yourankdatabase',
-  password: '0509',
-  port: 5432,
+// Connect to MongoDB Atlas
+mongoose.connect("mongodb+srv://golusinghmazedar:3zZ9oIHrYC5UJHHH@cluster0.my6pqth.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0/Engdb", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 });
 
-app.use(express.json());
 
-// Multer configuration for file upload
-const multer = require('multer');
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // Make sure 'uploads' directory exists
-  },
-  filename: (req, file, cb) => {
-    cb(null, file.originalname);
-  },
-});
-const upload = multer({ storage: storage });
+// Define schema for engineering parameters
+const EngineeringParameter = mongoose.model('EngineeringParameter', new mongoose.Schema({
+  parameter: String,
+  weight: Number,
+}));
 
-app.post('/upload', upload.single('file'), async (req, res) => {
+app.post(`/api/engineering/parameters`, async (req, res) => {
   try {
-    const filePath = req.file.path;
-    const results = [];
-
-    fs.createReadStream(filePath)
-      .pipe(csv())
-      .on('data', (data) => {
-        results.push(data);
-      })
-      .on('end', async () => {
-        fs.unlinkSync(filePath);
-
-        try {
-          await pool.query('DELETE FROM rankings');
-
-          for (const row of results) {
-            const queryText = `INSERT INTO rankings (original_rank, new_rank, change, college, fees, faculty, ss, fsr, fqe, fru, pu, qp, ipr, fppp, gph, gue, gms, gphd, rd, wd, escs, pcs, pr, total, your_score) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25)`;
-            const values = [
-              row['Original Rank'],
-              row['New Rank'],
-              row['Change'],
-              row['College'],
-              row['Fees'],
-              row['Faculty'],
-              row['SS'],
-              row['FSR'],
-              row['FQE'],
-              row['FRU'],
-              row['PU'],
-              row['QP'],
-              row['IPR'],
-              row['FPPP'],
-              row['GPH'],
-              row['GUE'],
-              row['GMS'],
-              row['GPHD'],
-              row['RD'],
-              row['WD'],
-              row['ESCS'],
-              row['PCS'],
-              row['PR'],
-              row['Total'],
-              row['your_score'] // Assuming 'Your Score' is the new column
-            ];
-
-            await pool.query(queryText, values);
-          }
-
-          res.status(200).json({ message: 'Data inserted successfully.' });
-        } catch (error) {
-          console.error('Error inserting data:', error);
-          res.status(500).json({ message: 'Failed to insert data into database.' });
-        }
+    const engineeringParameters = req.body;
+    
+    // Iterate over the received parameters
+    for (const paramName in engineeringParameters) {
+      const weight = engineeringParameters[paramName].weight;
+      
+      // Create a new EngineeringParameter document for each parameter and weight
+      const engineeringParameter = new EngineeringParameter({
+        parameter: paramName,
+        weight: weight,
       });
+      
+      // Save the document to the database
+      await engineeringParameter.save();
+    }
+
+    console.log('Received parameters:', req.body);
+
+
+    // console.log(engineeringParameters);
+    
+    res.status(201).json({ message: 'Parameters submitted successfully for Engineering' });
   } catch (error) {
-    console.error('Error processing file upload:', error);
-    res.status(500).json({ message: 'Internal server error.' });
+    console.error('Error submitting engineering parameters:', error);
+    res.status(500).json({ error: 'An error occurred while submitting the engineering parameters' });
   }
 });
 
-// Route handler for fetching rankings
-app.get('/api/rankings', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM rankings');
-    const rankings = result.rows;
-    res.status(200).json(rankings);
-  } catch (error) {
-    console.error('Error fetching rankings:', error);
-    res.status(500).json({ message: 'Internal server error.' });
-  }
-});
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
