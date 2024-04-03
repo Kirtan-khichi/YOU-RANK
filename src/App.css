@@ -1,3 +1,4 @@
+/* Light mode styles */
 .App {
   text-align: center;
 }
@@ -36,3 +37,24 @@
     transform: rotate(360deg);
   }
 }
+
+/* Dark mode styles */
+/* Update the styles for dark mode */
+.dark-mode {
+  background-color: #000; /* Change background color for dark mode */
+  color: #fff; /* Change text color for dark mode */
+}
+
+.dark-mode .app-container {
+  background-color: #000; /* Change background color for dark mode */
+}
+
+.dark-mode .app-header {
+  background-color: #000; /* Change background color for dark mode */
+  color: #fff; /* Change text color for dark mode */
+}
+
+/* Add more specific styles for other components if needed */
+
+
+/* Add any additional dark mode styles here */
