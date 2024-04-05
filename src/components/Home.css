@@ -67,13 +67,10 @@
 }
 
 .button-label:active {
-    background-color: #D9CDBF; /* Active Green */
+    background-color: #D9CDBF;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transform: translateY(1px);
 }
-
-
-/* Add more specific styles for other components if needed */
 
   
   @media (min-width: 769px) {

@@ -3,10 +3,10 @@
   text-align: center;
 }
 
-.App-logo {
+/* .App-logo {
   height: 40vmin;
   pointer-events: none;
-}
+} */
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
@@ -39,22 +39,24 @@
 }
 
 /* Dark mode styles */
-/* Update the styles for dark mode */
+
 .dark-mode {
-  background-color: #000; /* Change background color for dark mode */
-  color: #fff; /* Change text color for dark mode */
+  background-color: #000; 
+  color: #fff; 
 }
 
 .dark-mode .app-container {
-  background-color: #000; /* Change background color for dark mode */
+  background-color: #000; 
 }
 
 .dark-mode .app-header {
-  background-color: #000; /* Change background color for dark mode */
-  color: #fff; /* Change text color for dark mode */
+  background-color: #000; 
+  color: #fff; 
 }
 
-/* Add more specific styles for other components if needed */
-
-
-/* Add any additional dark mode styles here */
+.toggleButton {
+  position: absolute; /* Position the button */
+  top: 3%; /* Adjust the distance from the top */
+  right: 3%; /* Adjust the distance from the right */
+  z-index: 999; /* Ensure the button is above other content */
+}

@@ -1,26 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Papa from 'papaparse';
 import './styles.css';
+// import Chart from 'chart.js/auto';
+
 
 
 const initialParameters = {
-  SS: { weight: 0.3, max: 20 },
-  FSR: { weight: 0.3, max: 30 },
-  FQE: { weight: 0.30, max: 20 },
-  FRU: { weight: 0.30, max: 30 },
-  PU: { weight: 0.3, max: 35 },
-  QP: { weight: 0.3, max: 40 },
-  IPR: { weight: 0.3, max: 15 },
-  FPPP: { weight: 0.3, max: 10 },
-  GUE: { weight: 0.2, max: 15 },
-  GMS: { weight: 0.2, max: 25 },
-  GPH: { weight: 0.2, max: 40 },
-  GPHD: { weight: 0.2, max: 20 },
-  RD: { weight: 0.1, max: 30 },
-  WD: { weight: 0.1, max: 30 },
-  ESCS: { weight: 0.1, max: 20 },
-  PCS: { weight: 0.1, max: 20 },
-  PR: { weight: 0.1, max: 100 },
+  'Faculty Student Ratio': { weight: 0.3, max: 30 },
+  'Faculty Quality': { weight: 0.30, max: 20 },
+  'Median Salary': { weight: 0.2, max: 25 },
+  'Region Diversity': { weight: 0.1, max: 30 },
+  'Woman diversity': { weight: 0.1, max: 30 },
+  'Peer reputation': { weight: 0.1, max: 100 },
 };
 
 const EngineeringRanking = () => {
@@ -32,6 +23,9 @@ const EngineeringRanking = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [sliderAnimation, setSliderAnimation] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  // const [selectedRowData, setSelectedRowData] = useState(null);
+  // const [chartInstance, setChartInstance] = useState(null);
+
   const slidersRef = useRef(null);
 
   useEffect(() => {
@@ -45,7 +39,7 @@ const EngineeringRanking = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch("data/RankingEng2023.csv");
+      const response = await fetch("data/UpdatedRankingEng2023.csv");
       const text = await response.text();
       const { data, errors } = Papa.parse(text, { header: true });
       if (errors.length > 0) {
@@ -102,12 +96,19 @@ const EngineeringRanking = () => {
     //   console.error('Failed to submit parameters');
     // }
   
-    setRankings(
-      rankings.map((ranking) => ({
-        ...ranking,
-        Total: calculateScore(ranking),
-      }))
-    );
+    const updatedRankings = rankings.map((ranking) => ({
+      ...ranking,
+      Total: calculateScore(ranking),
+    }));
+  
+    const sortedRankings = [...updatedRankings].sort((a, b) => b.Total - a.Total);
+  
+    const rankedRankings = sortedRankings.map((ranking, index) => ({
+      ...ranking,
+      yourrank: index + 1,
+    }));
+  
+    setRankings(rankedRankings);
   
     setShowSliders(false);
     setSliderAnimation(false);
@@ -162,12 +163,11 @@ const EngineeringRanking = () => {
   };
 
   
-  
   return (
     <div className={`overall-rankings`}>
       {isMobile && (
         <div className="show-sliders-mobile">
-          <button onClick={toggleSliders} className='button-text increase-width'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Change Parameters&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
+          <button onClick={toggleSliders} className='button-text increase-width'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Change Parameters&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
         </div>
       )}
       {showSliders && (
@@ -211,11 +211,6 @@ const EngineeringRanking = () => {
       )}
 
       {!isMobile && (
-        // <div className={`sliders-container ${sliderAnimation ? 'show' : ''}`} ref={slidersRef}>
-        //   <div className="sliders-overlay" onClick={toggleSliders}></div>
-        //   <button className="backButton" onClick={toggleSliders}>
-        //     <span style={{ fontSize: '24px' }}>&larr;</span> Back
-        //   </button>
           <div className="sliders-content">
             <h3 style={ {textAlign: 'center'}}>Choose your parameters</h3>
             {Object.entries(initialParameters).map(([param, { weight, max }]) => (
@@ -248,7 +243,6 @@ const EngineeringRanking = () => {
               Calculate Score
             </button>
           </div>
-        // </div>
       )}
       <div className={`table-container${showSliders ? 'blur' : ''}`}>
         <h4 style={{ textAlign: 'center' }}>Choose what's important for you </h4>
@@ -263,8 +257,11 @@ const EngineeringRanking = () => {
           <table className="scroll-table">
             <thead>
               <tr>
-                <th onClick={() => requestSort('Rank')}>
+              <th onClick={() => requestSort('Rank')}>
                   NIRF RANK {sortConfig.key === 'Rank' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : null}
+                </th>
+                <th onClick={() => requestSort('yourrank')}>
+                  Your rank {sortConfig.key === 'yourrank' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : null}
                 </th>
                 <th onClick={() => requestSort('college')}>
                   College Name {sortConfig.key === 'college' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : null}
@@ -272,18 +269,15 @@ const EngineeringRanking = () => {
                 <th onClick={() => requestSort('Total')}>
                   Your Score {sortConfig.key === 'Total' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : null}
                 </th>
-                <th onClick={() => requestSort('Score')}>
-                  Nirf Score {sortConfig.key === 'Score' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : null}
-                </th>
               </tr>
             </thead>
             <tbody>
               {sortedFilteredRankings.map((ranking, index) => (
                 <tr key={index}>
                   <td style={{ textAlign: 'center' }}>{parseInt(ranking.Rank)}</td>
+                  <td style={{ textAlign: 'center' }}>{parseInt(ranking.yourrank) || "-"}</td>
                   <td style={{ textAlign: 'center' }}>{ranking.college}</td>
                   <td style={{ textAlign: 'center' }}>{ranking.Total || "-"}</td>
-                  <td style={{ textAlign: 'center' }}>{parseFloat(ranking.Score).toFixed(2)}</td>
                 </tr>
               ))}
             </tbody>
