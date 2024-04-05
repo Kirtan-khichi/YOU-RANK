@@ -19,7 +19,7 @@ mongoose.connect("mongodb+srv://golusinghmazedar:3zZ9oIHrYC5UJHHH@cluster0.my6pq
 });
 
 
-// Define schema for engineering parameters
+// Schema 
 const EngineeringParameter = mongoose.model('EngineeringParameter', new mongoose.Schema({
   parameter: String,
   weight: Number,
@@ -33,13 +33,13 @@ app.post(`/api/engineering/parameters`, async (req, res) => {
     for (const paramName in engineeringParameters) {
       const weight = engineeringParameters[paramName].weight;
       
-      // Create a new EngineeringParameter document for each parameter and weight
+      // Create a new EngineeringParameter document for each parameter and weight to upload on db.
       const engineeringParameter = new EngineeringParameter({
         parameter: paramName,
         weight: weight,
       });
       
-      // Save the document to the database
+      // Save the document to the db.
       await engineeringParameter.save();
     }
 

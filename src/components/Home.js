@@ -7,9 +7,6 @@ import Engneering from '../assets/Eng_WL.png';
 import './Home.css';
 
 const Home = () => {
-  const [darkMode, setDarkMode] = useState(false);
-
-  
 
   return (
     <div className='home'>
@@ -21,10 +18,10 @@ const Home = () => {
         To see the Rankings click on the circle of the particular field.
       </p>
       <div className="button-container">
-        <Link to="/overallRankings" className="button-link">
+        {/* <Link to="/overallRankings" className="button-link">
           <img src={overallRankingIcon} alt="Overall Rankings" />
           <div className="button-label">Overall Rankings</div>
-        </Link>
+        </Link> */}
         <Link to="/EngineeringRanking" className="button-link">
           <img src={Engneering} alt="Engineering Rankings" />
           <div className="button-label">Engineering Rankings</div>
