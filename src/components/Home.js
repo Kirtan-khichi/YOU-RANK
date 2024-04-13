@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import overallRankingIcon from '../assets/Overall_WL.png';
 import Medical from '../assets/Medical.png';
 import Law from '../assets/Law_WL.png';
 import Engneering from '../assets/Eng_WL.png';

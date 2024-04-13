@@ -9,6 +9,8 @@ import logo from './assets/Urank-updated.png';
 import './styles.css';
 
 
+
+
 const App = () => {
   const [darkMode, setDarkMode] = useState(false);
 
@@ -29,10 +31,10 @@ const App = () => {
           {/* <h1 className="app-title">U-rank</h1> */}
           {/* <button onClick={toggleDarkMode}>{darkMode ? 'Light Mode' : 'Dark Mode'}</button> */}
 
-          <button onClick={toggleDarkMode} className='toggleButton' style={{ top:"3%", right:"auto", position: 'absolute', zIndex: 999}}>{darkMode ? (
-          <i className="fas fa-sun"></i> // Light mode icon
+          <button onClick={toggleDarkMode} className='toggleButton' style={{ top: "18%", right:"auto", position: 'absolute', zIndex: 999, background:'None', border: 'None'}}>{darkMode ? (
+          <i className="fas fa-sun" style={{ fontSize: '24px' }}></i> // Light mode icon
         ) : (
-          <i className="fas fa-moon"></i> // Dark mode icon
+          <i className="fas fa-moon" style={{ fontSize: '20px' }}></i> // Dark mode icon
         )}
         </button>
         </div>
