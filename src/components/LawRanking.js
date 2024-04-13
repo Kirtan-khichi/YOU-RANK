@@ -3,15 +3,13 @@ import Papa from 'papaparse';
 import './styles.css';
 import ChartComponent from './ChartComponent';
 
-
 const initialParameters = {
-  'Faculty Student Ratio': { weight: 0.40, max: 30 },
-  'Faculty Quality': { weight: 0.40, max: 20 },
-  'Median Salary': { weight: 0.25, max: 25 },
+  'Faculty Student Ratio': { weight: 0.3, max: 30 },
+  'Faculty Quality': { weight: 0.30, max: 20 },
+  'Median Salary': { weight: 0.2, max: 25 },
   'Region Diversity': { weight: 0.1, max: 30 },
   'Woman diversity': { weight: 0.1, max: 30 },
   'Peer reputation': { weight: 0.1, max: 100 },
-
 };
 
 const LawRanking = () => {
@@ -22,14 +20,16 @@ const LawRanking = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [sliderAnimation, setSliderAnimation] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCollegeData, setSelectedCollegeData] = useState(null); 
-  const slidersRef = useRef(null);
-  const tableRef = useRef(null); 
+  const [selectedCollegeData, setSelectedCollegeData] = useState(null);
   const [additionalData, setAdditionalData] = useState([]);
   const [tableScrollTop, setTableScrollTop] = useState(0);
   const [selectedSortParam, setSelectedSortParam] = useState('');
   const [selectedRankingParam, setSelectedRankingParam] = useState('');
+  const [selectedCollegeChartData, setSelectedCollegeChartData] = useState(null);
+  const [showAdditionalInfo, setShowAdditionalInfo] = useState(false); // New state to track additional info visibility
 
+  const slidersRef = useRef(null);
+  const tableRef = useRef(null);
 
   useEffect(() => {
     fetchData();
@@ -75,7 +75,7 @@ const LawRanking = () => {
 
   const fetchAdditionalData = async () => {
     try {
-      const response = await fetch("data/LawStudentPdfData2023.csv"); // Step 2: Fetch additional data from additional.csv
+      const response = await fetch("data/LawStudentPdfData2023.csv");
       const text = await response.text();
       const { data, errors } = Papa.parse(text, { header: true });
       setAdditionalData(data);
@@ -114,34 +114,20 @@ const LawRanking = () => {
   };
 
   const applyScores = async () => {
-    // const response = await fetch('/api/engineering/parameters', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify(parameters),
-    // });
-  
-    // if (response.ok) {
-    //   console.log('Parameters submitted successfully');
-    // } else {
-    //   console.error('Failed to submit parameters');
-    // }
-  
     const updatedRankings = rankings.map((ranking) => ({
       ...ranking,
       Total: calculateScore(ranking),
     }));
-  
+
     const sortedRankings = [...updatedRankings].sort((a, b) => b.Total - a.Total);
-  
+
     const rankedRankings = sortedRankings.map((ranking, index) => ({
       ...ranking,
       yourrank: index + 1,
     }));
-  
+
     setRankings(rankedRankings);
-  
+
     setShowSliders(false);
     setSliderAnimation(false);
   };
@@ -171,10 +157,6 @@ const LawRanking = () => {
     }
   });
 
-
-
-
-
   const checkIfMobile = () => {
     setIsMobile(
       /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
@@ -197,45 +179,83 @@ const LawRanking = () => {
     }
   };
 
-  const handleInfoButtonClick = (collegeName) => {
-    const selectedData = additionalData.find(item => item.College === collegeName);
+  const handleInfoButtonClick = async (collegeName) => {
+    // Find additional data for the selected college
+    const selectedData = additionalData.filter((item) => item.College === collegeName);
     setSelectedCollegeData(selectedData);
+  
+    // Initialize an array to store chart data for each program
+    const chartDataArray = [];
+  
+    // Iterate over each row of additional data
+    selectedData.forEach((dataItem) => {
+      // Extract program name and data for the row
+      const programName = dataItem.Program;
+      const labels = Object.keys(dataItem).filter((key) => key.match(/^\d{4}-\d{2}$/));
+      const data = labels.map((label) => parseInt(dataItem[label], 10) || 0);
+  
+      // Reverse the order of labels and data for display
+      const reversedLabels = [...labels].reverse();
+      const reversedData = [...data].reverse();
+  
+      // Create chart data for the program
+      const chartData = {
+        labels: reversedLabels,
+        datasets: [
+          {
+            label: programName, // Program name as label
+            data: reversedData,
+            fill: false,
+            borderColor: 'rgb(75, 192, 192)',
+          },
+        ],
+      };
+  
+      // Push chart data for the program into the array
+      chartDataArray.push(chartData);
+    });
+  
+    // Update the state with the array of chart data
+    setSelectedCollegeChartData(chartDataArray);
+    setShowAdditionalInfo(true);
+  };
+  
+  
+  
+
+  const handleBackButtonClick = () => {
+    setShowAdditionalInfo(false);
   };
 
   const handleSortParamChange = (event) => {
     const selectedParam = event.target.value;
-  
-    // Check if a parameter is selected
+
     if (selectedParam !== "") {
       setSelectedSortParam(selectedParam);
       setSelectedRankingParam(selectedParam);
-  
+
       const sortedRankings = [...rankings].sort((a, b) => b[selectedParam] - a[selectedParam]);
-  
+
       const rankedRankings = sortedRankings.map((ranking, index) => {
-        const value = ranking[selectedParam]; 
-        const max = initialParameters[selectedParam]?.max; 
-        const total = (value / max) * 100; 
+        const value = ranking[selectedParam];
+        const max = initialParameters[selectedParam]?.max;
+        const total = (value / max) * 100;
         return {
           ...ranking,
           yourrank: index + 1,
-          Total: total.toFixed(2), 
+          Total: total.toFixed(2),
         };
       });
-  
+
       setRankings(rankedRankings);
     }
   };
-  
-  
-  
-  
 
   return (
     <div className={`overall-rankings`}>
       {isMobile && (
         <div className="show-sliders-mobile">
-          <button onClick={toggleSliders} className='button-text increase-width'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Change Parameters&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
+          <button onClick={toggleSliders} className='button-text increase-width'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Change Parameters&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
         </div>
       )}
       {showSliders && (
@@ -279,44 +299,38 @@ const LawRanking = () => {
       )}
 
       {!isMobile && (
-        // <div className={`sliders-container ${sliderAnimation ? 'show' : ''}`} ref={slidersRef}>
-        //   <div className="sliders-overlay" onClick={toggleSliders}></div>
-        //   <button className="backButton" onClick={toggleSliders}>
-        //     <span style={{ fontSize: '24px' }}>&larr;</span> Back
-        //   </button>
-          <div className="sliders-content">
-            <h3 style={ {textAlign: 'center'}}>Choose your parameters</h3>
-            {Object.entries(initialParameters).map(([param, { weight, max }]) => (
-              <div className="slider-item" key={param}>
-                <div className="slider-wrapper">
-                  <label className="slider-label" htmlFor={`${param}-weight`}>
-                    {param}
-                  </label>
-                  <input
-                    className="slider"
-                    type="range"
-                    id={`${param}-weight`}
-                    name={`${param}-weight`}
-                    min="0"
-                    max="1"
-                    step="0.01"
-                    value={parameters[param].weight}
-                    onChange={(e) => handleSliderChange(param, e.target.value)}
-                    style={{
-                      backgroundImage: `linear-gradient(to right, #576D46 ${parameters[
-                        param
-                      ].weight * 100}%, #FBFBFC ${parameters[param].weight * 100}%)`,
-                    }}
-                  />
-                  <span className="slider-value">{parameters[param].weight}</span>
-                </div>
+        <div className="sliders-content">
+          <h3 style={{ textAlign: 'center' }}>Choose your parameters</h3>
+          {Object.entries(initialParameters).map(([param, { weight, max }]) => (
+            <div className="slider-item" key={param}>
+              <div className="slider-wrapper">
+                <label className="slider-label" htmlFor={`${param}-weight`}>
+                  {param}
+                </label>
+                <input
+                  className="slider"
+                  type="range"
+                  id={`${param}-weight`}
+                  name={`${param}-weight`}
+                  min="0"
+                  max="1"
+                  step="0.01"
+                  value={parameters[param].weight}
+                  onChange={(e) => handleSliderChange(param, e.target.value)}
+                  style={{
+                    backgroundImage: `linear-gradient(to right, #576D46 ${parameters[
+                      param
+                    ].weight * 100}%, #FBFBFC ${parameters[param].weight * 100}%)`,
+                  }}
+                />
+                <span className="slider-value">{parameters[param].weight}</span>
               </div>
-            ))}
-            <button className="submit-button" onClick={applyScores}>
-              Calculate Score
-            </button>
-          </div>
-        // </div>
+            </div>
+          ))}
+          <button className="submit-button" onClick={applyScores}>
+            Calculate Score
+          </button>
+        </div>
       )}
       <div className={`table-container${showSliders ? 'blur' : ''}`}>
         <h4 style={{ textAlign: 'center' }}>Choose what's important for you </h4>
@@ -354,54 +368,27 @@ const LawRanking = () => {
               </tr>
             </thead>
             <tbody>
-            {sortedFilteredRankings.map((ranking, index) => (
-              <tr key={index}>
-                <td style={{ textAlign: 'center' }}>{parseInt(ranking.Rank)}</td>
-                <td style={{ textAlign: 'center' }}>{parseInt(ranking.yourrank) || "-"}</td>
-                <td style={{ position: 'relative', textAlign: 'center' }}>{ranking.college} 
-                  {/* <button onClick={() => handleInfoButtonClick(ranking.college)} className="info-button">i</button> */}
-                </td>
-                <td style={{ textAlign: 'center' }}>{ranking.Total || "-"}</td>
-              </tr>
-            ))}
-
+              {sortedFilteredRankings.map((ranking, index) => (
+                <tr key={index}>
+                  <td style={{ textAlign: 'center' }}>{parseInt(ranking.Rank)}</td>
+                  <td style={{ textAlign: 'center' }}>{parseInt(ranking.yourrank) || "-"}</td>
+                  <td style={{ position: 'relative', textAlign: 'center' }}>{ranking.college}
+                    <button onClick={() => handleInfoButtonClick(ranking.college)} className="info-button">i</button>
+                  </td>
+                  <td style={{ textAlign: 'center' }}>{ranking.Total || "-"}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
-        </div>
-      {selectedCollegeData && (
+      </div>
+      {showAdditionalInfo && (
         <div className="additional-info-modal" style={{ top: `calc(200px + ${tableScrollTop}px)` }}>
-          <h2>{selectedCollegeData.College}</h2>
-          <p>Program: {selectedCollegeData.Program}</p>
-          <table>
-      <thead>
-        <tr>
-          <th>Year</th>
-          <th>2021-22</th>
-          <th>2020-21</th>
-          <th>2019-20</th>
-          <th>2018-19</th>
-          <th>2017-18</th>
-          <th>2016-17</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Attendance</td>
-          <td>{selectedCollegeData['2021-22']}</td>
-          <td>{selectedCollegeData['2020-21']}</td>
-          <td>{selectedCollegeData['2019-20']}</td>
-          <td>{selectedCollegeData['2018-19']}</td>
-          <td>{selectedCollegeData['2017-18']}</td>
-          <td>{selectedCollegeData['2016-17']}</td>
-        </tr>
-        {/* Add more rows as needed */}
-      </tbody>
-    </table>
-    <ChartComponent csvData={selectedCollegeData} /> {/* Pass additionalData as csvData */}
-
-
-          {/* You can display other additional data here */}
+          <button className="backButton" onClick={handleBackButtonClick}>
+            <span style={{ fontSize: '24px' }}>&larr;</span> Back
+          </button>
+          {console.log(selectedCollegeChartData, "hiiii")}
+          <ChartComponent chartData={selectedCollegeChartData}/>
         </div>
       )}
     </div>
@@ -409,5 +396,3 @@ const LawRanking = () => {
 };
 
 export default LawRanking;
-
-

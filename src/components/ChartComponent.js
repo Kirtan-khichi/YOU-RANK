@@ -1,50 +1,70 @@
-import React, { useEffect, useRef } from 'react';
-import { Line } from 'react-chartjs-2';
-import Papa from 'papaparse';
+import React from "react";
+import { Line } from "react-chartjs-2";
+import { Chart, Title, CategoryScale, LinearScale, PointElement, LineElement, LineController, Legend } from "chart.js";
+import "./chartStyle.css";
 
-const ChartComponent = ({ csvData }) => {
-  const chartRef = useRef(null);
+Chart.register(Title, CategoryScale, LinearScale, PointElement, LineElement, LineController, Legend);
 
-  useEffect(() => {
-    const processData = (csvData) => {
-      // Parse CSV data using PapaParse
-      const { data } = Papa.parse(csvData, { header: true });
+function ChartComponent({ chartData }) {
+  // Check if chartData is available before rendering
+  if (!chartData || !Array.isArray(chartData)) {
+    return <div>Loading chart data...</div>;
+  }
 
-      // Extract labels and data from CSV
-      const chartLabels = data.map(row => row.label); // Assuming 'label' column contains x-axis labels
-      const chartData = data.map(row => parseInt(row.value, 10)); // Assuming 'value' column contains numeric data
+  // Extract labels and datasets, ensuring unique labels for clarity
+  const allLabels = chartData.reduce((acc, current) => [...acc, ...current.labels], []);
+  const uniqueLabels = [...new Set(allLabels)]; // Remove duplicates using Set
 
-      return {
-        labels: chartLabels,
-        datasets: [
-          {
-            label: 'Data',
-            data: chartData,
-            fill: false,
-            borderColor: 'rgb(75, 192, 192)',
-          },
-        ],
-      };
-    };
+  const datasets = chartData.map((data, index) => ({
+    label: data.datasets[0].label,
+    data: data.datasets[0].data,
+    fill: data.datasets[0].fill,
+    borderColor: `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`, // Generate random color for each line
+  }));
 
-    if (chartRef.current && csvData) {
-      const chartData = processData(csvData);
-      // Update the chart data
-      chartRef.current.chartInstance.data = chartData;
-      // Redraw the chart
-      chartRef.current.chartInstance.update();
-    }
-  }, [csvData]);
+  const data = {
+    labels: uniqueLabels, // Use the unique labels for clarity
+    datasets: datasets,
+  };
+
+  // Configure Chart.js options
+  const options = {
+    plugins: {
+      title: {
+        display: true,
+        text: "Number of Students over Time", // Title for the chart
+      },
+      legend: {
+        display: true, // Enable the legend
+        position: "right", // Display the legend on the right side
+      },
+    },
+    scales: {
+      x: {
+        type: "category", // Use 'category' scale for x-axis
+        title: {
+          display: true,
+          text: "Year", // Label for x-axis
+        },
+        // Use the unique labels for the x-axis ticks
+        ticks: {
+          labels: uniqueLabels,
+        },
+      },
+      y: {
+        title: {
+          display: true,
+          text: "Number of Students", // Label for y-axis
+        },
+      },
+    },
+  };
 
   return (
-    <div>
-      {csvData ? (
-        <Line ref={chartRef} />
-      ) : (
-        <div>No data available</div>
-      )}
+    <div className="chart-container">
+      <Line data={data} options={options} />
     </div>
   );
-};
+}
 
 export default ChartComponent;
