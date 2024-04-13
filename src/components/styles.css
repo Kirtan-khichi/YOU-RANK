@@ -6,8 +6,8 @@ body {
 }
 
 .dark-mode body {
-  background: #000; /* Dark mode background color */
-  color: #f8f8f8; /* Dark mode text color */
+  background: #000;
+  color: #f8f8f8;
   margin: 0;
   padding: 0;
   height: 100%;
@@ -201,6 +201,59 @@ body {
 /* Update the styles for dark mode */
 
 /* Add more specific styles for other components if needed */
+
+.additional-info-modal {
+  position: absolute;
+  top: 10%; /* Adjust the top position as needed */
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%);
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 20px;
+  z-index: 9999; /* Ensure it's above other elements */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.additional-info-modal h2 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.additional-info-modal p {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.dropdownMenu {
+  text-align: center;
+  margin: 20px auto;
+  max-width: 300px;
+}
+
+.dropdownMenu select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  color: #333;
+  font-size: 16px;
+}
+
+.info-button {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  border-radius: 100%;
+  /* background: none; */
+  /* border: none; */
+  /* padding: 0; */
+  /* background-color: #000; */
+  margin: 5px;
+  cursor: pointer;
+  font-size: 12px; /* Adjust the font size as needed */
+  color: rgb(86, 86, 162);
+}
 
 
 
@@ -416,13 +469,11 @@ body {
 }
 
 @media screen and (min-width: 769px) {
-  /* For laptop/desktop view */
   
 
-/* Table container */
 .table-container {
-  width: 40%;
-  margin-left: 50%;
+  width: 60%;
+  margin-left: 36%;
   /* margin: 20px auto; */
   max-height: calc(100vh - 200px);
   overflow: auto;
@@ -433,9 +484,9 @@ body {
 }
 
 .dark-mode .table-container {
-  width: 40%;
-  margin-left: 50%;
-  /* margin: 20px auto; */
+  width: 60%;
+  margin-left: 36%;
+  /* margin:  20px auto; */
   max-height: calc(100vh - 200px);
   overflow: auto;
   position: relative;
@@ -462,6 +513,7 @@ body {
 
 }
 
+
 /* Table header */
 .scroll-table thead th {
   position: sticky;
@@ -475,16 +527,19 @@ body {
 
 }
 
+
 .dark-mode .scroll-table thead th{
   background-color: #151414;
   color: #ccc;
 }
+
 
 /* Table cells */
 .scroll-table th {
   padding: 8px;
 
 }
+
 
 .dark-mode .scroll-table td{
   background-color: #282525;
@@ -497,12 +552,12 @@ body {
 }
 
 
-
 .table-container th:nth-child(3), /* Adjust the index according to your table structure */
   .table-container td:nth-child(3) {
     /* Increase the width of the first column */
     width: 40%; /* Adjust the width as needed */
   }
+
 
 /* Search bar */
 .search-bar {
@@ -525,6 +580,7 @@ body {
   box-sizing: border-box;
   outline: none; 
 }
+
 
 /* Submit button */
 .submit-button {
@@ -564,7 +620,7 @@ body {
 .sliders-content{
   position: fixed;
   margin-left: 20px;
-  width: 40%;
+  width: 30%;
   overflow-y: auto;
   scrollbar-width: none;
   /* height: 75vh; */
@@ -577,8 +633,14 @@ body {
 
 }
 
+
 .dark-mode .sliders-content {
   background-color: #282525;
+  /* color: #ccc; */
+}
+
+.dark-mode .slider-label{
+  color: #ccc;
 }
 
 .sliders-container {
@@ -642,6 +704,8 @@ body {
   border-radius: 10px;
   border:none
 } 
+
+
 
 /* .overall-rankings {
   backdrop-filter: blur(); 

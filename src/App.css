@@ -56,7 +56,7 @@
 
 .toggleButton {
   position: absolute; /* Position the button */
-  top: 3%; /* Adjust the distance from the top */
+  top: 20%; /* Adjust the distance from the top */
   right: 3%; /* Adjust the distance from the right */
   z-index: 999; /* Ensure the button is above other content */
 }

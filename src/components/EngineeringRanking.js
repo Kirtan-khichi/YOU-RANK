@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Papa from 'papaparse';
 import './styles.css';
-// import Chart from 'chart.js/auto';
-
+import ChartComponent from './ChartComponent';
 
 
 const initialParameters = {
@@ -14,8 +13,8 @@ const initialParameters = {
   'Peer reputation': { weight: 0.1, max: 100 },
 };
 
+
 const EngineeringRanking = () => {
-  // const [darkMode, setDarkMode] = useState(false);
   const [rankings, setRankings] = useState([]);
   const [parameters, setParameters] = useState(initialParameters);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
@@ -23,17 +22,41 @@ const EngineeringRanking = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [sliderAnimation, setSliderAnimation] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  // const [selectedRowData, setSelectedRowData] = useState(null);
-  // const [chartInstance, setChartInstance] = useState(null);
-
+  const [selectedCollegeData, setSelectedCollegeData] = useState(null); 
   const slidersRef = useRef(null);
+  const tableRef = useRef(null); 
+  const [additionalData, setAdditionalData] = useState([]);
+  const [tableScrollTop, setTableScrollTop] = useState(0);
+  const [selectedSortParam, setSelectedSortParam] = useState('');
+  const [selectedRankingParam, setSelectedRankingParam] = useState('');
+  const [SelectedCollegeChartData, setSelectedCollegeChartData] = useState(null); // Add this state
+
+
 
   useEffect(() => {
     fetchData();
+    fetchAdditionalData();
     checkIfMobile();
+
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (tableRef.current) {
+        setTableScrollTop(tableRef.current.scrollTop);
+      }
+    };
+    if (tableRef.current) {
+      tableRef.current.addEventListener('scroll', handleScroll);
+    }
+    return () => {
+      if (tableRef.current) {
+        tableRef.current.removeEventListener('scroll', handleScroll);
+      }
     };
   }, []);
 
@@ -49,6 +72,17 @@ const EngineeringRanking = () => {
       }
     } catch (error) {
       console.error('Error fetching rankings:', error);
+    }
+  };
+
+  const fetchAdditionalData = async () => {
+    try {
+      const response = await fetch("data/Eng2023StudentData.csv"); // Step 2: Fetch additional data from additional.csv
+      const text = await response.text();
+      const { data, errors } = Papa.parse(text, { header: true });
+      setAdditionalData(data);
+    } catch (error) {
+      console.error('Error fetching additional data:', error);
     }
   };
 
@@ -113,7 +147,6 @@ const EngineeringRanking = () => {
     setShowSliders(false);
     setSliderAnimation(false);
   };
-  
 
   const requestSort = (key) => {
     let direction = 'ascending';
@@ -140,6 +173,10 @@ const EngineeringRanking = () => {
     }
   });
 
+
+
+
+
   const checkIfMobile = () => {
     setIsMobile(
       /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
@@ -162,12 +199,68 @@ const EngineeringRanking = () => {
     }
   };
 
+  const handleInfoButtonClick = (collegeName) => {
+    const selectedData = additionalData.find(item => item.College === collegeName);
+    setSelectedCollegeData(selectedData);
   
+    // Extract the academic years and corresponding number of students
+    const labels = Object.keys(selectedData).filter(key => key.match(/^\d{4}-\d{2}$/));
+    const data = labels.map(label => parseInt(selectedData[label], 10) || 0);
+  
+    // Define the chart data object
+    const chartData = {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Number of Students',
+          data: data,
+          fill: false,
+          borderColor: 'rgb(75, 192, 192)',
+        },
+      ],
+    };
+  
+    setSelectedCollegeChartData(chartData); // Set the selected college chart data
+  };
+  
+  
+  
+
+  const handleSortParamChange = (event) => {
+    const selectedParam = event.target.value;
+  
+    // Check if a parameter is selected
+    if (selectedParam !== "") {
+      setSelectedSortParam(selectedParam);
+      setSelectedRankingParam(selectedParam);
+  
+      const sortedRankings = [...rankings].sort((a, b) => b[selectedParam] - a[selectedParam]);
+  
+      const rankedRankings = sortedRankings.map((ranking, index) => {
+        const value = ranking[selectedParam]; 
+        const max = initialParameters[selectedParam]?.max; 
+        const total = (value / max) * 100; 
+        return {
+          ...ranking,
+          yourrank: index + 1,
+          Total: total.toFixed(2), 
+        };
+      });
+  
+      setRankings(rankedRankings);
+    }
+  };
+  
+
+  
+  
+  
+
   return (
     <div className={`overall-rankings`}>
       {isMobile && (
         <div className="show-sliders-mobile">
-          <button onClick={toggleSliders} className='button-text increase-width'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Change Parameters&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
+          <button onClick={toggleSliders} className='button-text increase-width'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Change Parameters&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
         </div>
       )}
       {showSliders && (
@@ -211,6 +304,11 @@ const EngineeringRanking = () => {
       )}
 
       {!isMobile && (
+        // <div className={`sliders-container ${sliderAnimation ? 'show' : ''}`} ref={slidersRef}>
+        //   <div className="sliders-overlay" onClick={toggleSliders}></div>
+        //   <button className="backButton" onClick={toggleSliders}>
+        //     <span style={{ fontSize: '24px' }}>&larr;</span> Back
+        //   </button>
           <div className="sliders-content">
             <h3 style={ {textAlign: 'center'}}>Choose your parameters</h3>
             {Object.entries(initialParameters).map(([param, { weight, max }]) => (
@@ -243,6 +341,7 @@ const EngineeringRanking = () => {
               Calculate Score
             </button>
           </div>
+        // </div>
       )}
       <div className={`table-container${showSliders ? 'blur' : ''}`}>
         <h4 style={{ textAlign: 'center' }}>Choose what's important for you </h4>
@@ -253,15 +352,23 @@ const EngineeringRanking = () => {
           onChange={handleSearch}
           className="search-bar"
         />
+        <div className='dropdownMenu'>
+          <select value={selectedSortParam} onChange={handleSortParamChange}>
+            <option value="">Select one parameter</option>
+            {Object.keys(initialParameters).map(param => (
+              <option key={param} value={param}>{param}</option>
+            ))}
+          </select>
+        </div>
         <div className="table-wrapper">
           <table className="scroll-table">
             <thead>
               <tr>
-              <th onClick={() => requestSort('Rank')}>
-                  NIRF RANK {sortConfig.key === 'Rank' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : null}
+                <th onClick={() => requestSort('Rank')}>
+                  NIRF RANK {sortConfig.key === 'Rank' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : '▲'}
                 </th>
                 <th onClick={() => requestSort('yourrank')}>
-                  Your rank {sortConfig.key === 'yourrank' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : null}
+                  Your rank {sortConfig.key === 'yourrank' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : '▲'}
                 </th>
                 <th onClick={() => requestSort('college')}>
                   College Name {sortConfig.key === 'college' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : null}
@@ -272,18 +379,26 @@ const EngineeringRanking = () => {
               </tr>
             </thead>
             <tbody>
-              {sortedFilteredRankings.map((ranking, index) => (
-                <tr key={index}>
-                  <td style={{ textAlign: 'center' }}>{parseInt(ranking.Rank)}</td>
-                  <td style={{ textAlign: 'center' }}>{parseInt(ranking.yourrank) || "-"}</td>
-                  <td style={{ textAlign: 'center' }}>{ranking.college}</td>
-                  <td style={{ textAlign: 'center' }}>{ranking.Total || "-"}</td>
-                </tr>
-              ))}
+            {sortedFilteredRankings.map((ranking, index) => (
+              <tr key={index}>
+                <td style={{ textAlign: 'center' }}>{parseInt(ranking.Rank)}</td>
+                <td style={{ textAlign: 'center' }}>{parseInt(ranking.yourrank) || "-"}</td>
+                <td style={{ position: 'relative', textAlign: 'center' }}>{ranking.college} 
+                  {/* <button onClick={() => handleInfoButtonClick(ranking.college)} className="info-button">i</button> */}
+                </td>
+                <td style={{ textAlign: 'center' }}>{ranking.Total || "-"}</td>
+              </tr>
+            ))}
+
             </tbody>
           </table>
         </div>
-      </div>
+        </div>
+        {/* {SelectedCollegeChartData && (
+      <div className="additional-info-modal" style={{ top: `calc(200px + ${tableScrollTop}px)` }}>
+        <ChartComponent chartData={SelectedCollegeChartData} onBackButtonClick={handleBackButtonClick} />
+        </div> */}
+      {/* )} */}
     </div>
   );
 };
