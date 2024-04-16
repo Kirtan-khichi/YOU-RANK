@@ -4,21 +4,29 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    /* max-width: ; */
     
   }
   
   .dark-mode .button-link{
     background-color: #D9D9D9;
   }
+
   .button-link {
     text-decoration: none;
-    padding: 10px 20px; /* Increase padding for better appearance */
     border-radius: 10px;
     border: 2px solid #000;
+    padding: 20px;
     margin: 10px;
     transition: all 0.5s ease;
-    flex: 1;
-    max-width: 200px; /* Limit button width */
+    /* max-width: 200px; Limit button width */
+    display: flex; /* Make it a flex container */
+    flex-direction: column; /* Align items vertically */
+    align-items: center; /* Center items horizontally */
+    /* max-width: 130px; */
+    /* max-height: 130px; */
+    width: 130px;
+    height: 130px;
   }
   
   .button-link:hover {
@@ -32,6 +40,7 @@
     height: 80px;
     border-radius: 50%;
     margin-bottom: 5px;
+    justify-content: center;
     
   }
 
@@ -72,12 +81,5 @@
     transform: translateY(1px);
 }
 
-  
-  @media (min-width: 769px) {
-    .button-link {
-      flex: none;
-      width: auto;
-      margin: 10px;
-    }
-  }
+
   

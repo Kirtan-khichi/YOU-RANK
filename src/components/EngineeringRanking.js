@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Papa from 'papaparse';
 import './styles.css';
 import ChartComponent from './ChartComponent';
+import sliderArrow from '../assets/slider_arrow.jpg';
 
 const initialParameters = {
   'Faculty Student Ratio': { weight: 0.3, max: 30 },
@@ -26,7 +27,7 @@ const EngineeringRanking = () => {
   const [selectedSortParam, setSelectedSortParam] = useState('');
   const [selectedRankingParam, setSelectedRankingParam] = useState('');
   const [selectedCollegeChartData, setSelectedCollegeChartData] = useState(null);
-  const [showAdditionalInfo, setShowAdditionalInfo] = useState(false); // New state to track additional info visibility
+  const [showAdditionalInfo, setShowAdditionalInfo] = useState(false); 
 
   const slidersRef = useRef(null);
   const tableRef = useRef(null);
@@ -118,19 +119,49 @@ const EngineeringRanking = () => {
       ...ranking,
       Total: calculateScore(ranking),
     }));
-
+  
     const sortedRankings = [...updatedRankings].sort((a, b) => b.Total - a.Total);
-
+  
     const rankedRankings = sortedRankings.map((ranking, index) => ({
       ...ranking,
       yourrank: index + 1,
     }));
-
+  
     setRankings(rankedRankings);
-
+    // console.log(rankedRankings);
+  
     setShowSliders(false);
     setSliderAnimation(false);
+
+    const selectedParameters = {};
+    for (const [param, { weight }] of Object.entries(parameters)) {
+      selectedParameters[param] = weight;
+    }
+
+    console.log(selectedParameters);
+
+    try { 
+      const response = await fetch('https://ach4l.pythonanywhere.com/urank_eng', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(selectedParameters), 
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to save scores to the database');
+      }
+
+      const textData = await response.text();
+      console.log(textData);
+
+    } catch (error) {
+      
+      console.error('Error saving scores:', error);
+    }
   };
+  
 
   const requestSort = (key) => {
     let direction = 'ascending';
@@ -180,30 +211,24 @@ const EngineeringRanking = () => {
   };
 
   const handleInfoButtonClick = async (collegeName) => {
-    // Find additional data for the selected college
     const selectedData = additionalData.filter((item) => item.College === collegeName);
     setSelectedCollegeData(selectedData);
   
-    // Initialize an array to store chart data for each program
     const chartDataArray = [];
   
-    // Iterate over each row of additional data
     selectedData.forEach((dataItem) => {
-      // Extract program name and data for the row
       const programName = dataItem.Program;
       const labels = Object.keys(dataItem).filter((key) => key.match(/^\d{4}-\d{2}$/));
       const data = labels.map((label) => parseInt(dataItem[label], 10) || 0);
   
-      // Reverse the order of labels and data for display
       const reversedLabels = [...labels].reverse();
       const reversedData = [...data].reverse();
   
-      // Create chart data for the program
       const chartData = {
         labels: reversedLabels,
         datasets: [
           {
-            label: programName, // Program name as label
+            label: programName, 
             data: reversedData,
             fill: false,
             borderColor: 'rgb(75, 192, 192)',
@@ -211,11 +236,9 @@ const EngineeringRanking = () => {
         ],
       };
   
-      // Push chart data for the program into the array
       chartDataArray.push(chartData);
     });
   
-    // Update the state with the array of chart data
     setSelectedCollegeChartData(chartDataArray);
     setShowAdditionalInfo(true);
   };
@@ -255,7 +278,8 @@ const EngineeringRanking = () => {
     <div className={`overall-rankings`}>
       {isMobile && (
         <div className="show-sliders-mobile">
-          <button onClick={toggleSliders} className='button-text increase-width'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Change Parameters&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
+          <button onClick={toggleSliders} className='button-text increase-width'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Change Parameters </b> &nbsp;<img src={sliderArrow} alt="" className="sliderarrow" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
         </div>
       )}
       {showSliders && (
@@ -387,7 +411,6 @@ const EngineeringRanking = () => {
           <button className="backButton" onClick={handleBackButtonClick}>
             <span style={{ fontSize: '24px' }}>&larr;</span> Back
           </button>
-          {console.log(selectedCollegeChartData, "hiiii")}
           <ChartComponent chartData={selectedCollegeChartData}/>
         </div>
       )}

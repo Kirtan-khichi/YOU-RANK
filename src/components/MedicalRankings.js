@@ -387,7 +387,6 @@ const MedicalRankings = () => {
           <button className="backButton" onClick={handleBackButtonClick}>
             <span style={{ fontSize: '24px' }}>&larr;</span> Back
           </button>
-          {console.log(selectedCollegeChartData, "hiiii")}
           <ChartComponent chartData={selectedCollegeChartData}/>
         </div>
       )}

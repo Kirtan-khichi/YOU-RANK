@@ -6,12 +6,10 @@ import "./chartStyle.css";
 Chart.register(Title, CategoryScale, LinearScale, PointElement, LineElement, LineController, Legend);
 
 function ChartComponent({ chartData }) {
-  // Check if chartData is available before rendering
   if (!chartData || !Array.isArray(chartData)) {
     return <div>Loading chart data...</div>;
   }
 
-  // Extract labels and datasets, ensuring unique labels for clarity
   const allLabels = chartData.reduce((acc, current) => [...acc, ...current.labels], []);
   const uniqueLabels = [...new Set(allLabels)]; // Remove duplicates using Set
 
