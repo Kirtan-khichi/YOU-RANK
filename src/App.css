@@ -40,24 +40,38 @@
 
 /* Dark mode styles */
 
-.dark-mode {
+/* .dark-mode {
   background-color: #000; 
   color: #fff; 
-}
+} */
 
-.dark-mode .app-container {
+/* .dark-mode .app-container {
   background-color: #000; 
 }
 
 .dark-mode .app-header {
   background-color: #000; 
   color: #fff; 
-}
+} */
 
-.toggleButton {
+.app-header .toggleButton {
   position: absolute; /* Position the button */
-  top: 20%; /* Adjust the distance from the top */
-  right: 3%; /* Adjust the distance from the right */
+  top: 3%; /* Adjust the distance from the top */
+  right: 2%; /* Adjust the distance from the right */
   z-index: 999; /* Ensure the button is above other content */
+  background: none;
+  /* border: none; */
+  border-color: black;
   
 }
+
+@media screen and (max-width: 768px) {
+  .app-header .toggleButton {
+    position: absolute; /* Position the button */
+    top: 3%; /* Adjust the distance from the top */
+    right: 6%; /* Adjust the distance from the right */
+    z-index: 999; /* Ensure the button is above other content */
+    
+  }
+}
+
