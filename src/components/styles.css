@@ -415,7 +415,7 @@ body {
 
   .sliders-container.show {
     left: calc(40% - 10px);
-    top: 150px; /* Adjust the position as needed */
+    top: 175px; /* Adjust the position as needed */
     /* padding: 40px; */
     padding-left: 40px;
     border-color: rgba(3, 1, 1, 0.1);
