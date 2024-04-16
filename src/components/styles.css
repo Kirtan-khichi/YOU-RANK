@@ -353,7 +353,7 @@ body {
     left: 0;
     width: 30px;
     height: 90vh;
-    top: 160px;
+    top: 165px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -466,6 +466,12 @@ body {
 
   .sliderarrow{
     width: 20px;
+    background: none;
+    background-color: none;
+  }
+
+  .sliderArrowDiv{
+    background: none;
   }
 
 

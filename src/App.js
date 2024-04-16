@@ -9,9 +9,16 @@ import EngineeringRanking from './components/EngineeringRanking';
 import './components/styles.css';
 import logo from './assets/Urank-updated.png';
 import './styles.css';
+import './App.css';
+import { DarkModeToggle } from '@anatoliygatt/dark-mode-toggle';
+
+
+
 
 const App = () => {
   const [darkMode, setDarkMode] = useState(false);
+  const [mode, setMode] = useState('dark');
+
 
   useEffect(() => {
     // Add Google Analytics script dynamically
@@ -45,13 +52,25 @@ const App = () => {
       <div className={darkMode ? 'app-container dark-mode' : 'app-container'}>
         <div className="app-header" style={ {maxHeight:"20vh"}}>
           <img src={logo} alt="Logo" className="app-logo" style={ {width: '100px'}} />
-          <button onClick={toggleDarkMode} className='toggleButton' style={{ top: "18vh", right:"auto", position: 'absolute', zIndex: 999, borderRadius: "0%"}}>
-            {darkMode ? (
-              <i className="fas fa-sun" style={{ fontSize: '24px' }}> Light</i>
-            ) : (
-              <i className="fas fa-moon" style={{ fontSize: '20px' }}> Dark</i>
-            )}
-          </button>
+          <div onClick={toggleDarkMode} className='toggleButton'>
+            <DarkModeToggle
+            mode={mode}
+            onClick={toggleDarkMode}
+            onChange={(mode) => {
+              setMode(mode);
+            }}
+
+            inactiveTrackColor="#fff"
+            // inactiveTrackColorOnHover="#f8fafc"
+            // inactiveTrackColorOnActive="#cbd5e1"
+            // activeTrackColor="#334155"
+            // activeTrackColorOnHover="#1e293b"
+            // activeTrackColorOnActive="#0f172a"
+            // inactiveThumbColor="#1e293b"
+            // activeThumbColor="#e2e8f0"
+            />
+          </div>
+          
         </div>
         <Routes>
           <Route path="/" element={<Home />} />
