@@ -91,6 +91,7 @@ body {
   background-color: #D9CDBF;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  /* overflow-y: auto; */
 }
 
 .sliders-container h2 {
@@ -353,7 +354,7 @@ body {
     left: 0;
     width: 30px;
     height: 90vh;
-    top: 165px;
+    top: 184px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -403,7 +404,7 @@ body {
     top: 5px;
     left: calc(55% - 10px); /* Adjust the left position to be 25% of the viewport width */
     width: 75%; /* Set the width to cover 75% of the viewport */
-    /* height: 75vh; Set the height to cover the entire viewport */
+    /* height: 70vh;  */
     background-color: #D9CDBF;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -633,9 +634,9 @@ body {
   width: 30%;
   overflow-y: auto;
   scrollbar-width: none;
-  /* height: 75vh; */
-  /* padding-top: 20px; */
-  margin-top: 5px;
+  height: 72vh;
+  padding-top: 10px;
+  margin-top: 2px;
   /* transform: translateX(-50%); */
   /* border-color: #000; */
   /* border: #000; */
@@ -659,7 +660,7 @@ body {
   left: 50%; /* Center the sliders horizontally */
   transform: translateX(-50%);
   width: 40%; 
-  height: 75vh; /* Set the height to cover the entire viewport */
+  height: 75vh; 
   background-color: #D9CDBF;
   border-radius: 15px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -674,7 +675,6 @@ body {
   left: 50%; /* Center the sliders horizontally */
   transform: translateX(-50%);
   top: 150px; /* Adjust the top position as needed */
-
 
 }
 
@@ -714,6 +714,40 @@ body {
   border-radius: 10px;
   border:none
 } 
+
+.navbar {
+  margin-left: auto; /* Aligns navbar to the right */
+}
+
+.navbar ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.navbar li {
+  float: right; /* Aligns list items to the right */
+}
+
+.navbar li a {
+  display: block;
+  color: #000;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+.navbar li a:hover {
+  background-color: #b6b0b0;
+}
+
+.toggleButton {
+  margin-left: auto; /* Aligns the dark mode toggle to the right */
+  color: #fff;
+  cursor: pointer;
+}
+
 
 
 
