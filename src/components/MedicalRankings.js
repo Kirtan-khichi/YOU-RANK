@@ -3,7 +3,6 @@ import Papa from 'papaparse';
 import './styles.css';
 import ChartComponent from './ChartComponent';
 import sliderArrow from '../assets/slider_arrow.png';
-import { DarkModeToggle } from '@anatoliygatt/dark-mode-toggle';
 
 
 
@@ -121,20 +120,49 @@ const MedicalRankings = () => {
       ...ranking,
       Total: calculateScore(ranking),
     }));
-
+  
     const sortedRankings = [...updatedRankings].sort((a, b) => b.Total - a.Total);
-
+  
     const rankedRankings = sortedRankings.map((ranking, index) => ({
       ...ranking,
       yourrank: index + 1,
     }));
-
+  
     setRankings(rankedRankings);
-
+    // console.log(rankedRankings);
+  
     setShowSliders(false);
     setSliderAnimation(false);
-  };
 
+    const selectedParameters = {};
+    for (const [param, { weight }] of Object.entries(parameters)) {
+      selectedParameters[param] = weight;
+    }
+
+    console.log(selectedParameters);
+
+    try { 
+      const response = await fetch('https://ach4l.pythonanywhere.com/urank_med', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(selectedParameters), 
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to save scores to the database');
+      }
+
+      const textData = await response.text();
+      console.log(textData);
+
+    } catch (error) {
+      
+      console.error('Error saving scores:', error);
+    }
+  };
+  
   const requestSort = (key) => {
     let direction = 'ascending';
     if (sortConfig.key === key && sortConfig.direction === 'ascending') {

@@ -62,7 +62,58 @@
   background: none;
   /* border: none; */
   border-color: black;
+}
+
+.mobile-menu {
+  display: none; /* Hide the mobile menu by default */
+}
+
+.hamburger-icon {
+  display: none; /* Hide the hamburger icon by default */
+}
+
+.hamburger-icon .fa-bars {
+  font-size: 24px; /* Set font size */
+  color: #000; /* Set color */
+}
+
+.hamburger-icon .fa-bars:hover {
+  color: #333; /* Change color on hover */
+}
+
+
+
+/* Beautify the content of the menu */
+.menu {
+  background-color: #fff;
   
+}
+
+.dark-mode .menu{
+  background-color: #282525;
+}
+
+.menu ul {
+  list-style-type: none; /* Remove bullet points from list */
+  padding: 0;
+  margin: 0;
+}
+
+.dark-mode .menu li a{
+  color: #f9f9f9;
+}
+
+.menu li {
+  padding: 10px 20px; /* Add padding to list items */
+}
+
+.menu li a {
+  text-decoration: none; /* Remove underline from links */
+  color: #000; /* Set link color */
+}
+
+.menu li a:hover {
+  background-color: #f5f5f5; /* Change background color on hover */
 }
 
 @media screen and (max-width: 768px) {
@@ -72,6 +123,25 @@
     right: 6%; /* Adjust the distance from the right */
     z-index: 999; /* Ensure the button is above other content */
     
+  }
+
+
+  .desktop-menu {
+    display: none; /* Hide the desktop menu on mobile devices */
+  }
+
+  .mobile-menu {
+    display: block; /* Show the mobile menu on mobile devices */
+    
+
+  }
+
+  .hamburger-icon {
+    display: block; /* Show the hamburger icon on mobile devices */
+    position: absolute;
+    right: 3%; /* Adjust the left position as needed */
+    top: 0; /* Adjust the top position as needed */
+    cursor: pointer;
   }
 }
 

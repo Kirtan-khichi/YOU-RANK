@@ -120,19 +120,50 @@ const LawRanking = () => {
       ...ranking,
       Total: calculateScore(ranking),
     }));
-
+  
     const sortedRankings = [...updatedRankings].sort((a, b) => b.Total - a.Total);
-
+  
     const rankedRankings = sortedRankings.map((ranking, index) => ({
       ...ranking,
       yourrank: index + 1,
     }));
-
+  
     setRankings(rankedRankings);
-
+    // console.log(rankedRankings);
+  
     setShowSliders(false);
     setSliderAnimation(false);
+
+    const selectedParameters = {};
+    for (const [param, { weight }] of Object.entries(parameters)) {
+      selectedParameters[param] = weight;
+    }
+
+    console.log(selectedParameters);
+
+    try { 
+      const response = await fetch('https://ach4l.pythonanywhere.com/urank_law', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(selectedParameters), 
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to save scores to the database');
+      }
+
+      const textData = await response.text();
+      console.log(textData);
+
+    } catch (error) {
+      
+      console.error('Error saving scores:', error);
+    }
   };
+  
+
 
   const requestSort = (key) => {
     let direction = 'ascending';
