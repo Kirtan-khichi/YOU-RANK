@@ -23,13 +23,13 @@ National Institute of Technology Warangal,24.79,16.34,17.42,20.30152738,16.52,34
 Indian Institute of Technology Ropar,28.28,18.13,18.96,18.73,14.74,32.7,60.51,22,Rupnagar,Punjab
 National Institute of Technology Calicut,27.3,17.41,16.24,17.44,22.89,33.06,60.28,23,Kozhikode,Kerala
 Institute of Chemical Technology,26.74,18.02,13.54,18.8589011,24.91,17.57,59.7,24,Mumbai,Maharashtra
-Birla Institute of Technology & Science -Pilani,27.61,16.44,15.13,17.0419542,18.9,22.01,59.52,25,Pilani,Rajasthan
+Birla Institute of Technology & Science -Pilani,27.61,16.44,15.13,26.19120611,18.9,22.01,59.52,25,Pilani,Rajasthan
 "Jamia Millia Islamia,New Delhi",26.85,14.78,13.02,24.86084615,11.78,18.34,59.3,26,New Delhi,Delhi
 Siksha `O` Anusandhan,30,15.42,9.54,17.82893891,30,24.07,58.92,27,Bhubaneswar,Odisha
 S.R.M. Institute of Science and Technology,23.15,13.16,9.54,21.82559524,22.49,22.01,58.56,28,Chennai,Tamil Nadu
 Delhi Technological University,30,11.96,17.44,20.57334107,19.6,43.22,58.34,29,New Delhi,Delhi
 Indian Institute of Technology Jodhpur,30,18.58,18.42,16.58,20.42,11.7,58.03,30,Jodhpur,Rajasthan
-Amity University,30,19.07,9.24,8.472426036,26.12,7.93,57.3,31,Gautam Budh Nagar,Uttar Pradesh
+Amity University,30,19.07,9.24,22.44923077,26.12,7.93,57.3,31,Gautam Budh Nagar,Uttar Pradesh
 Aligarh Muslim University,30,16.17,11.43,21.53150215,11.59,24.51,57.26,32,Aligarh,Uttar Pradesh
 Indian Institute of Technology Mandi,22.26,15.21,21.25,18.13,16.29,24.73,56.49,33,Mandi,Himachal Pradesh
 Shanmugha Arts Science Technology & Research Academy,30,16.75,12.41,17.65985577,25.81,11.4,56.21,34,Thanjavur,Tamil Nadu
@@ -51,7 +51,7 @@ Motilal Nehru National Institute of Technology,16.61,11.34,16.84,18.2,12.04,16.5
 Lovely Professional University,23.53,12.72,11.19,18.65158333,19.08,25.39,51.47,50,Phagwara,Punjab
 National Institute of Technology Delhi,30,17.95,16.62,13.61,22.52,19.6,51.41,51,Delhi,Delhi
 Visvesvaraya Technological University,26.64,13.59,8.72,1.209552239,28.02,8.91,51.38,52,Belgaum,Karnataka
-Birla Institute of Technology,20.2,13.36,19.66,26.10623656,14.43,32.88,50.68,53,Ranchi,Jharkhand
+Birla Institute of Technology,20.2,13.36,19.66,16.98666667,14.43,32.88,50.68,53,Ranchi,Jharkhand
 UPES,26.42,15.52,10.23,14.42655804,21.36,30.66,50.63,54,Dehradun,Uttarakhand
 International Institute of Information Technology Hyderabad,20.58,14.25,25,16.72479339,16.64,23.4,50.33,55,Hyderabad,Telangana
 National Institute of Technology Patna,22.14,14.85,14.14,18.75076923,12.27,4.87,50.16,56,Patna,Bihar
@@ -97,5 +97,5 @@ National Institute of Technology Manipur,29.66,15.94,12.94,9.8716,20.47,3.79,42.
 R.V. College of Engineering,27.15,14.87,14.69,6.62,22.62,14.03,42.22,96,Bengaluru,Karnataka
 "Pandit Dwarka Prasad Mishra Indian Institute of Information Technology, Design and Manufacturing (IIITDM)",15.12,10.32,15.59,15.16,10.24,3.06,42.14,97,Jabalpur,Madhya Pradesh
 SR University,30,17.52,9.82,6.732954545,29.67,10.79,42.09,98,Warangal,Telangana
-"Amity University Haryana, Gurgaon",27.54,14.73,10.18,22.6015748,23.28,13.75,41.99,99,"Gurugram, Haryana",Haryana
+"Amity University Haryana, Gurgaon",27.54,14.73,10.18,8.52992126,23.28,13.75,41.99,99,"Gurugram, Haryana",Haryana
 "C.V. Raman Global University, Odisha",29.13,16.74,10.45,1.775362998,26.41,6.26,41.93,100,Bhubaneswar,Odisha
