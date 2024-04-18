@@ -8,7 +8,7 @@ const initialParameters = {
   'Faculty Student Ratio': { weight: 0.3, max: 30 },
   'Faculty Quality': { weight: 0.30, max: 20 },
   'Median Salary': { weight: 0.2, max: 25 },
-  'Research': { weight: 0.1, max: 40 },
+  'Research': { weight: 0.3, max: 40 },
   'Woman diversity': { weight: 0.1, max: 30 },
   'Peer reputation': { weight: 0.1, max: 100 },
 };
