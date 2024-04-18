@@ -19,7 +19,7 @@ const MethodologyPage = () => {
           Penalty percentage = Number of Retractions / Number of Faculty * 100 * 3
         </p>
         <p>
-          This means that if 10% of the faculty have retractions, then the college will be penalised 50% of their research points.
+          This means that if 10% of the faculty have retractions, then the college will be penalised 30% of their research points.
         </p>
         <p>
           We are the first rankings to propose this and we hope this becomes the norm for other rankings going ahead.
