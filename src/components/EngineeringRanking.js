@@ -142,7 +142,7 @@ const EngineeringRanking = () => {
     console.log(selectedParameters);
 
     try { 
-      const response = await fetch(process.env.Eng, {
+      const response = await fetch('https://ach4l.pythonanywhere.com/urank_eng', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

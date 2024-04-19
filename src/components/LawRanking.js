@@ -143,7 +143,7 @@ const LawRanking = () => {
     console.log(selectedParameters);
 
     try { 
-      const response = await fetch(process.env.Law, {
+      const response = await fetch('https://ach4l.pythonanywhere.com/urank_law', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
