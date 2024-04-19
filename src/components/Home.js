@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Medical from '../assets/Medical.png';
 import Law from '../assets/Law_WL.png';
@@ -6,6 +6,8 @@ import Engneering from '../assets/Eng_WL.png';
 import './Home.css';
 
 const Home = () => {
+  
+  
 
   return (
     <div className='home'>
@@ -34,6 +36,11 @@ const Home = () => {
           <div className="button-label">Law</div>
         </Link>
       </div>
+      <footer>
+          <div className="disclaimer">
+            <p>We store the IP address of the user for curating statistics of choice of parameters.</p>
+          </div>
+      </footer>
     </div>
   );
 };

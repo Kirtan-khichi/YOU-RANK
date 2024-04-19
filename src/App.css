@@ -116,17 +116,22 @@
 }
 
 .disclaimer {
-  position: fixed; /* Fixed position */
-  top: 0%; /* Adjust distance from the top */
-  left: 50%; /* Center horizontally */
-  transform: translateX(-50%); /* Center horizontally */
-  background-color: #f8d7da; /* Red background */
-  color: #721c24; /* Dark red text color */
-  padding: 10px 20px; /* Padding around the text */
-  text-align: center; /* Center-align the text */
-  border: 1px solid #f5c6cb; /* Light red border */
-  border-radius: 4px; /* Rounded corners */
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #faf8f8;
+  padding: 10px;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  font-size: 14px;
 }
+
+.disclaimer p {
+  margin: 0;
+  color: #6c757d;
+}
+
 
 
 

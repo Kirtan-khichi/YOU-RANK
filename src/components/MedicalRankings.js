@@ -293,9 +293,9 @@ const MedicalRankings = () => {
       {showSliders && (
         <div className={`sliders-container ${sliderAnimation ? 'show' : ''}`} ref={slidersRef}>
           <div className="sliders-overlay" onClick={toggleSliders}></div>
-          <button className="backButton" onClick={toggleSliders}>
-            <span style={{ fontSize: '24px' }}>&larr;</span> Back
-          </button>
+          <button className="submit-button" onClick={applyScores}>
+              Calculate Score
+            </button>
           <div className="sliders-content">
             {Object.entries(initialParameters).map(([param, { weight, max }]) => (
               <div className="slider-item" key={param}>
@@ -323,15 +323,13 @@ const MedicalRankings = () => {
                 </div>
               </div>
             ))}
-            <button className="submit-button" onClick={applyScores}>
-              Calculate Score
-            </button>
           </div>
         </div>
       )}
 
       {!isMobile && (
         <div className="sliders-content">
+          
           <h3 style={{ textAlign: 'center' }}>Choose your parameters</h3>
           {Object.entries(initialParameters).map(([param, { weight, max }]) => (
             <div className="slider-item" key={param}>
@@ -360,13 +358,20 @@ const MedicalRankings = () => {
             </div>
           ))}
           <button className="submit-button" onClick={applyScores}>
-            Calculate Score
-          </button>
+              Calculate Score
+            </button>
         </div>
       )}
       <div className={`table-container${showSliders ? 'blur' : ''}`}>
+      {isMobile ? (
+        <a href="#sliders-content" onClick={toggleSliders}>
+          <h4 style={{ textAlign: 'center', textDecoration: 'underline', cursor: 'pointer' }}>Choose what's important for you </h4>
+        </a>
+      ) : (
         <h4 style={{ textAlign: 'center' }}>Choose what's important for you </h4>
-        <input
+      )}
+       
+      <input
           type="text"
           placeholder="Search college"
           value={searchTerm}

@@ -20,15 +20,6 @@ const App = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showDisclaimer, setShowDisclaimer] = useState(true);
 
-  useEffect(() => {
-    // Here you can perform any necessary actions related to collecting IP addresses
-    // For example, you can make an API call to your backend to log the IP address
-    // This is just a placeholder to demonstrate the functionality
-    setTimeout(() => {
-      setShowDisclaimer(false); // Hide the disclaimer after a certain time (e.g., 5 seconds)
-    }, 5000); // Adjust the time according to your preference
-  }, []);
-
   const toggleDarkMode = () => {
     setDarkMode(prevMode => {
       const newMode = !prevMode;
@@ -45,11 +36,6 @@ const App = () => {
   return (
     <Router>
       <div className={darkMode ? 'app-container dark-mode' : 'app-container'}>
-        {showDisclaimer && (
-          <div className="disclaimer">
-            <p>We store the IP address of the user for curating statistics of choice of parameters.</p>
-          </div>
-        )}
         <div className="app-header" style={{ maxHeight: "20vh" }}>
           <img src={logo} alt="Logo" className="app-logo" style={{ width: '100px' }} />
           <div className="toggleButton" onClick={toggleDarkMode}>
