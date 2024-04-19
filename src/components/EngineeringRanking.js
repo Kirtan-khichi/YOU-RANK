@@ -79,6 +79,7 @@ const EngineeringRanking = () => {
       const response = await fetch("data/Eng2023StudentData.csv");
       const text = await response.text();
       const { data, errors } = Papa.parse(text, { header: true });
+      // console.log(data, errors);
       setAdditionalData(data);
     } catch (error) {
       console.error('Error fetching additional data:', error);
@@ -141,7 +142,7 @@ const EngineeringRanking = () => {
     console.log(selectedParameters);
 
     try { 
-      const response = await fetch('https://ach4l.pythonanywhere.com/urank_eng', {
+      const response = await fetch(process.env.Eng, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -211,37 +212,44 @@ const EngineeringRanking = () => {
   };
 
   const handleInfoButtonClick = async (collegeName) => {
-    const selectedData = additionalData.filter((item) => item.College === collegeName);
-    setSelectedCollegeData(selectedData);
-  
-    const chartDataArray = [];
-  
-    selectedData.forEach((dataItem) => {
-      const programName = dataItem.Program;
-      const labels = Object.keys(dataItem).filter((key) => key.match(/^\d{4}-\d{2}$/));
-      const data = labels.map((label) => parseInt(dataItem[label], 10) || 0);
-  
-      const reversedLabels = [...labels].reverse();
-      const reversedData = [...data].reverse();
-  
-      const chartData = {
-        labels: reversedLabels,
-        datasets: [
-          {
-            label: programName, 
-            data: reversedData,
-            fill: false,
-            borderColor: 'rgb(75, 192, 192)',
-          },
-        ],
-      };
-  
-      chartDataArray.push(chartData);
-    });
-  
-    setSelectedCollegeChartData(chartDataArray);
-    setShowAdditionalInfo(true);
-  };
+      console.log(collegeName);
+      const selectedData = additionalData.filter((item) => item.College === collegeName);
+      setSelectedCollegeData(selectedData);
+    
+      // Initialize an array to store chart data for each program
+      const chartDataArray = [];
+    
+      // Iterate over each row of additional data
+      selectedData.forEach((dataItem) => {
+        // Extract program name and data for the row
+        const labels = Object.keys(dataItem).filter((key) => key.match(/^\d{4}-\d{2}$/));
+        const data = labels.map((label) => parseInt(dataItem[label], 10) || 0);
+    
+        // Reverse the order of labels and data for display
+        const reversedLabels = [...labels].reverse();
+        const reversedData = [...data].reverse();
+    
+        // Create chart data for the program
+        const chartData = {
+          labels: reversedLabels,
+          datasets: [
+            {
+              data: reversedData,
+              fill: false,
+              borderColor: 'rgb(75, 192, 192)',
+            },
+          ],
+        };
+    
+        // Push chart data for the program into the array
+        chartDataArray.push(chartData);
+      });
+    
+      // Update the state with the array of chart data
+      setSelectedCollegeChartData(chartDataArray);
+      setShowAdditionalInfo(true);
+    };
+    
   
   
   
@@ -397,7 +405,7 @@ const EngineeringRanking = () => {
                   <td style={{ textAlign: 'center' }}>{parseInt(ranking.Rank)}</td>
                   <td style={{ textAlign: 'center' }}>{parseInt(ranking.yourrank) || "-"}</td>
                   <td style={{ position: 'relative', textAlign: 'center' }}>{ranking.college}
-                    <button onClick={() => handleInfoButtonClick(ranking.college)} className="info-button">i</button>
+                    {/* <button onClick={() => handleInfoButtonClick(ranking.college)} className="info-button">i</button> */}
                   </td>
                   <td style={{ textAlign: 'center' }}>{ranking.Total || "-"}</td>
                 </tr>
@@ -411,7 +419,8 @@ const EngineeringRanking = () => {
           <button className="backButton" onClick={handleBackButtonClick}>
             <span style={{ fontSize: '24px' }}>&larr;</span> Back
           </button>
-          <ChartComponent chartData={selectedCollegeChartData}/>
+          {console.log(selectedCollegeChartData, "fgh")}
+          <ChartComponent chartData={selectedCollegeChartData} />
         </div>
       )}
     </div>

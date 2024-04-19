@@ -80,6 +80,7 @@ const LawRanking = () => {
       const response = await fetch("data/LawStudentPdfData2023.csv");
       const text = await response.text();
       const { data, errors } = Papa.parse(text, { header: true });
+      console.log(data);
       setAdditionalData(data);
     } catch (error) {
       console.error('Error fetching additional data:', error);
@@ -142,7 +143,7 @@ const LawRanking = () => {
     console.log(selectedParameters);
 
     try { 
-      const response = await fetch('https://ach4l.pythonanywhere.com/urank_law', {
+      const response = await fetch(process.env.Law, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

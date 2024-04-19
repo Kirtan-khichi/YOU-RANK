@@ -24,6 +24,9 @@ const MethodologyPage = () => {
         <p>
           We are the first rankings to propose this and we hope this becomes the norm for other rankings going ahead.
         </p>
+        <p>
+          Data Source: NIRF 2023, Retraction Watch Database
+        </p>
       </div>
     </div>
   );

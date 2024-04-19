@@ -142,7 +142,7 @@ const MedicalRankings = () => {
     console.log(selectedParameters);
 
     try { 
-      const response = await fetch('https://ach4l.pythonanywhere.com/urank_med', {
+      const response = await fetch(process.env.Med, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
