@@ -739,7 +739,8 @@ body {
 }
 
 .navbar li a:hover {
-  background-color: #b6b0b0;
+  /* background-color: #b6b0b0; */
+  text-decoration: underline;
 }
 
 .toggleButton {

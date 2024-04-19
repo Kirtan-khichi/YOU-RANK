@@ -6,6 +6,8 @@ import "./chartStyle.css";
 Chart.register(Title, CategoryScale, LinearScale, PointElement, LineElement, LineController, Legend);
 
 function ChartComponent({ chartData }) {
+
+  console.log(chartData);
   if (!chartData || !Array.isArray(chartData)) {
     return <div>Loading chart data...</div>;
   }
