@@ -329,10 +329,9 @@ const EngineeringRanking = () => {
 
       {!isMobile && (
         <div className="sliders-content">
+          
           <h3 style={{ textAlign: 'center' }}>Choose your parameters</h3>
-          <button className="submit-button" onClick={applyScores}>
-            Calculate Score
-          </button>
+          
           {Object.entries(initialParameters).map(([param, { weight, max }]) => (
             <div className="slider-item" key={param}>
               <div className="slider-wrapper">
@@ -357,15 +356,23 @@ const EngineeringRanking = () => {
                 />
                 <span className="slider-value">{parameters[param].weight}</span>
               </div>
+
             </div>
           ))}
-          
+          <button className="submit-button" onClick={applyScores}>
+            Calculate Score
+          </button>
         </div>
       )}
       <div className={`table-container${showSliders ? 'blur' : ''}`}>
-      <a href="#sliders-content" onClick={toggleSliders}>
-        <h4 style={{ textAlign: 'center', textDecoration: 'underline', cursor: 'pointer', transition: 'color 0.3s, transform 0.3s', color: '#4CAF50' }}>Choose what's important for you</h4>
-      </a>
+      {isMobile ? (
+        <a href="#sliders-content" onClick={toggleSliders}>
+          <h4 style={{ textAlign: 'center', textDecoration: 'underline', cursor: 'pointer' }}>Choose what's important for you </h4>
+        </a>
+      ) : (
+        <h4 style={{ textAlign: 'center' }}>Choose what's important for you </h4>
+      )}
+
      <input
           type="text"
           placeholder="Search college"
