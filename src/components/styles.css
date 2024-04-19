@@ -431,6 +431,7 @@ body {
     border: none;
     border-radius: 5px;
     padding: 10px 20px;
+    margin-bottom: 20px;
     cursor: pointer;
     width: 100%;
     text-align: center;
