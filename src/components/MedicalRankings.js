@@ -364,8 +364,8 @@ const MedicalRankings = () => {
       )}
       <div className={`table-container${showSliders ? 'blur' : ''}`}>
       {isMobile ? (
-        <a href="#sdf" onClick={toggleSliders}>
-          <h4 style={{ textAlign: 'center', textDecoration: 'underline', cursor: 'pointer', transition: 'color 0.3s, transform 0.3s', color: '#4CAF50' }}>Choose what's important for you </h4>
+        <a href="#sliders-content" onClick={toggleSliders}>
+         <h4 style={{ textAlign: 'center', textDecoration: 'underline', cursor: 'pointer', transition: 'color 0.3s, transform 0.3s', color: '#4CAF50' }}>Choose what's important for you </h4>
         </a>
       ) : (
         <h4 style={{ textAlign: 'center' }}>Choose what's important for you </h4>
