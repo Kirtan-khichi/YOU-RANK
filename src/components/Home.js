@@ -37,9 +37,7 @@ const Home = () => {
         </Link>
       </div>
       <footer>
-          <div className="disclaimer">
-            <p>We store the IP address of the user for curating statistics of choice of parameters.</p>
-          </div>
+        We store the IP address of the user for curating statistics of choice of parameters. Data Source: NIRF 2023, Retraction Watch Database
       </footer>
     </div>
   );

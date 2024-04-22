@@ -212,47 +212,37 @@ const EngineeringRanking = () => {
   };
 
   const handleInfoButtonClick = async (collegeName) => {
-      console.log(collegeName);
-      const selectedData = additionalData.filter((item) => item.College === collegeName);
-      setSelectedCollegeData(selectedData);
-    
-      // Initialize an array to store chart data for each program
-      const chartDataArray = [];
-    
-      // Iterate over each row of additional data
-      selectedData.forEach((dataItem) => {
-        // Extract program name and data for the row
-        const labels = Object.keys(dataItem).filter((key) => key.match(/^\d{4}-\d{2}$/));
-        const data = labels.map((label) => parseInt(dataItem[label], 10) || 0);
-    
-        // Reverse the order of labels and data for display
-        const reversedLabels = [...labels].reverse();
-        const reversedData = [...data].reverse();
-    
-        // Create chart data for the program
-        const chartData = {
-          labels: reversedLabels,
-          datasets: [
+    console.log(collegeName);
+    const selectedData = additionalData.filter((item) => item.College === collegeName);
+    console.log(selectedData); // Debugging
+    setSelectedCollegeData(selectedData);
+
+    // Initialize an array to store chart data for each program
+    const chartDataArray = [];
+
+    // Extract labels (years) and data for the selected college
+    const labels = Object.keys(selectedData[0]).filter((key) => key !== 'College');
+    const data = labels.map((label) => parseInt(selectedData[0][label], 10) || 0);
+
+    // Create chart data for the selected college
+    const chartData = {
+        labels: labels,
+        datasets: [
             {
-              data: reversedData,
-              fill: false,
-              borderColor: 'rgb(75, 192, 192)',
+                data: data,
+                fill: false,
+                borderColor: 'rgb(75, 192, 192)',
             },
-          ],
-        };
-    
-        // Push chart data for the program into the array
-        chartDataArray.push(chartData);
-      });
-    
-      // Update the state with the array of chart data
-      setSelectedCollegeChartData(chartDataArray);
-      setShowAdditionalInfo(true);
+        ],
     };
-    
-  
-  
-  
+
+    // Push chart data for the selected college into the array
+    chartDataArray.push(chartData);
+
+    // Update the state with the array of chart data
+    setSelectedCollegeChartData(chartDataArray);
+    setShowAdditionalInfo(true);
+};
 
   const handleBackButtonClick = () => {
     setShowAdditionalInfo(false);
@@ -367,10 +357,13 @@ const EngineeringRanking = () => {
       <div className={`table-container${showSliders ? 'blur' : ''}`}>
       {isMobile ? (
         <a href="#sliders-content" onClick={toggleSliders}>
-          <h4 style={{ textAlign: 'center', textDecoration: 'underline', cursor: 'pointer' }}>Choose what's important for you </h4>
+<h4 style={{ textAlign: 'center' }} className='disclaimer'>
+  <img src={sliderArrow} alt="" className="sliderarrow" style={{ transform: 'rotate(90deg)' }} />
+  Choose what's important for you
+</h4>
         </a>
       ) : (
-        <h4 style={{ textAlign: 'center' }}>Choose what's important for you </h4>
+        <h4 style={{ textAlign: 'center' }} className='disclaimer'>Choose what's important for you </h4>
       )}
 
      <input
@@ -412,7 +405,7 @@ const EngineeringRanking = () => {
                   <td style={{ textAlign: 'center' }}>{parseInt(ranking.Rank)}</td>
                   <td style={{ textAlign: 'center' }}>{parseInt(ranking.yourrank) || "-"}</td>
                   <td style={{ position: 'relative', textAlign: 'center' }}>{ranking.college}
-                    {/* <button onClick={() => handleInfoButtonClick(ranking.college)} className="info-button">i</button> */}
+                    <button onClick={() => handleInfoButtonClick(ranking.college)} className="info-button">i</button>
                   </td>
                   <td style={{ textAlign: 'center' }}>{ranking.Total || "-"}</td>
                 </tr>
@@ -426,7 +419,6 @@ const EngineeringRanking = () => {
           <button className="backButton" onClick={handleBackButtonClick}>
             <span style={{ fontSize: '24px' }}>&larr;</span> Back
           </button>
-          {console.log(selectedCollegeChartData, "fgh")}
           <ChartComponent chartData={selectedCollegeChartData} />
         </div>
       )}
