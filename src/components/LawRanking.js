@@ -143,13 +143,14 @@ const LawRanking = () => {
     console.log(selectedParameters);
 
     try { 
-      const response = await fetch('https://ach4l.pythonanywhere.com/urank_law', {
+      const response = await fetch('https://cors-anywhere.herokuapp.com/https://ach4l.pythonanywhere.com/urank_law', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(selectedParameters), 
       });
+
   
       if (!response.ok) {
         throw new Error('Failed to save scores to the database');
@@ -368,7 +369,11 @@ const LawRanking = () => {
       <div className={`table-container${showSliders ? 'blur' : ''}`}>
       {isMobile ? (
         <a href="#sliders-content" onClick={toggleSliders}>
-          <h4 style={{ textAlign: 'center', textDecoration: 'underline', cursor: 'pointer', transition: 'color 0.3s, transform 0.3s', color: '#4CAF50' }}>Choose what's important for you </h4>
+          <h4 style={{ textAlign: 'center' }} className='disclaimer'>
+            <img src={sliderArrow} alt="" className="sliderarrow" style={{ transform: 'rotate(90deg)' }} />
+            Choose what's important for you
+          </h4>        
+
         </a>
       ) : (
         <h4 style={{ textAlign: 'center' }}>Choose what's important for you </h4>
@@ -413,6 +418,7 @@ const LawRanking = () => {
                   <td style={{ textAlign: 'center' }}>{parseInt(ranking.Rank)}</td>
                   <td style={{ textAlign: 'center' }}>{parseInt(ranking.yourrank) || "-"}</td>
                   <td style={{ position: 'relative', textAlign: 'center' }}>{ranking.college}
+
                   </td>
                   <td style={{ textAlign: 'center' }}>{ranking.Total || "-"}</td>
                 </tr>

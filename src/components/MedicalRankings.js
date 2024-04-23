@@ -365,7 +365,10 @@ const MedicalRankings = () => {
       <div className={`table-container${showSliders ? 'blur' : ''}`}>
       {isMobile ? (
         <a href="#sliders-content" onClick={toggleSliders}>
-          <h4 style={{ textAlign: 'center', textDecoration: 'underline', cursor: 'pointer', transition: 'color 0.3s, transform 0.3s', color: '#4CAF50' }}>Choose what's important for you </h4>
+          <h4 style={{ textAlign: 'center' }} className='disclaimer'>
+            <img src={sliderArrow} alt="" className="sliderarrow" style={{ transform: 'rotate(90deg)' }} />
+            Choose what's important for you
+          </h4> 
         </a>
       ) : (
         <h4 style={{ textAlign: 'center' }}>Choose what's important for you </h4>
@@ -410,6 +413,7 @@ const MedicalRankings = () => {
                   <td style={{ textAlign: 'center' }}>{parseInt(ranking.Rank)}</td>
                   <td style={{ textAlign: 'center' }}>{parseInt(ranking.yourrank) || "-"}</td>
                   <td style={{ position: 'relative', textAlign: 'center' }}>{ranking.college}
+
                   </td>
                   <td style={{ textAlign: 'center' }}>{ranking.Total || "-"}</td>
                 </tr>

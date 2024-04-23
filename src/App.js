@@ -18,7 +18,6 @@ const App = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [mode, setMode] = useState('dark');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [showDisclaimer, setShowDisclaimer] = useState(true);
 
   const toggleDarkMode = () => {
     setDarkMode(prevMode => {
