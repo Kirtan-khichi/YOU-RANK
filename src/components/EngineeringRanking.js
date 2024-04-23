@@ -360,6 +360,7 @@ const EngineeringRanking = () => {
             <img src={sliderArrow} alt="" className="sliderarrow" style={{ transform: 'rotate(90deg)' }} />
             Choose what's important for you
           </h4>
+
         </a>
       ) : (
         <h4 style={{ textAlign: 'center' }} className='disclaimer'>Choose what's important for you </h4>
