@@ -139,7 +139,6 @@ const MedicalRankings = () => {
       selectedParameters[param] = weight;
     }
 
-    console.log(selectedParameters);
 
     try { 
       const response = await fetch('https://ach4l.pythonanywhere.com/urank_med', {
@@ -155,7 +154,6 @@ const MedicalRankings = () => {
       }
 
       const textData = await response.text();
-      console.log(textData);
 
     } catch (error) {
       

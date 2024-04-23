@@ -27,6 +27,7 @@
     /* max-height: 130px; */
     width: 130px;
     height: 130px;
+  
   }
   
   .button-link:hover {
@@ -81,8 +82,26 @@
     transform: translateY(1px);
 }
 
+@media screen and (max-width: 768px) {
+  #LawButton{
+    margin-bottom: 80px;
+  }
+}
+
+
 
 /*  */
+
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: #f0f0f0;
+  padding: 10px 0;
+  text-align: center;
+}
+
 
 
   

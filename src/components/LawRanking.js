@@ -80,7 +80,6 @@ const LawRanking = () => {
       const response = await fetch("data/LawStudentPdfData2023.csv");
       const text = await response.text();
       const { data, errors } = Papa.parse(text, { header: true });
-      console.log(data);
       setAdditionalData(data);
     } catch (error) {
       console.error('Error fetching additional data:', error);
@@ -140,8 +139,6 @@ const LawRanking = () => {
       selectedParameters[param] = weight;
     }
 
-    console.log(selectedParameters);
-
     try { 
       const response = await fetch('https://cors-anywhere.herokuapp.com/https://ach4l.pythonanywhere.com/urank_law', {
         method: 'POST',
@@ -157,7 +154,6 @@ const LawRanking = () => {
       }
 
       const textData = await response.text();
-      console.log(textData);
 
     } catch (error) {
       
