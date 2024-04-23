@@ -212,9 +212,7 @@ const EngineeringRanking = () => {
   };
 
   const handleInfoButtonClick = async (collegeName) => {
-    console.log(collegeName);
     const selectedData = additionalData.filter((item) => item.College === collegeName);
-    console.log(selectedData); // Debugging
     setSelectedCollegeData(selectedData);
 
     // Initialize an array to store chart data for each program
@@ -222,8 +220,9 @@ const EngineeringRanking = () => {
 
     // Extract labels (years) and data for the selected college
     const labels = Object.keys(selectedData[0]).filter((key) => key !== 'College');
+    
     const data = labels.map((label) => parseInt(selectedData[0][label], 10) || 0);
-
+    console.log(labels, data)
     // Create chart data for the selected college
     const chartData = {
         labels: labels,
