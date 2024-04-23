@@ -36,7 +36,7 @@ const Home = () => {
           <div className="button-label">Law</div>
         </Link>
       </div>
-      <footer style={{ position: 'fixed', bottom: 0, width: '100%', backgroundColor: '#f0f0f0', padding: '10px 0' }}>
+      <footer className="footer">
         <div style={{ textAlign: 'center' }}>
           <p>We store the IP address of the user for curating statistics of choice of parameters. Data Source: NIRF 2023, Retraction Watch Database</p>
         </div>
