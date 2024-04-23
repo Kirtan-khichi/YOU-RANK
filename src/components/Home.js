@@ -31,7 +31,7 @@ const Home = () => {
           <img src={Medical} alt="Medical Rankings" />
           <div className="button-label">Medical</div>
         </Link>
-        <Link to="/LawRanking" className="button-link">
+        <Link to="/LawRanking" className="button-link" id='LawButton'>
           <img src={Law} alt="Law Rankings" />
           <div className="button-label">Law</div>
         </Link>
