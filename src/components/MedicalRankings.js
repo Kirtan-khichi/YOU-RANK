@@ -139,7 +139,6 @@ const MedicalRankings = () => {
       selectedParameters[param] = weight;
     }
 
-    console.log(selectedParameters);
 
     try { 
       const response = await fetch('https://ach4l.pythonanywhere.com/urank_med', {
@@ -155,7 +154,6 @@ const MedicalRankings = () => {
       }
 
       const textData = await response.text();
-      console.log(textData);
 
     } catch (error) {
       
@@ -371,8 +369,11 @@ const MedicalRankings = () => {
           </h4> 
         </a>
       ) : (
-        <h4 style={{ textAlign: 'center' }}>Choose what's important for you </h4>
+        <h4 style={{ textAlign: 'center' }}>Choose what's important for you 
+            <h6>*Data Source: NIRF 2023, Retraction Watch Database</h6>
+        </h4>
       )}
+      
        
       <input
           type="text"

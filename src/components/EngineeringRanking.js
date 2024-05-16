@@ -139,7 +139,6 @@ const EngineeringRanking = () => {
       selectedParameters[param] = weight;
     }
 
-    console.log(selectedParameters);
 
     try { 
       const response = await fetch('https://ach4l.pythonanywhere.com/urank_eng', {
@@ -155,7 +154,6 @@ const EngineeringRanking = () => {
       }
 
       const textData = await response.text();
-      console.log(textData);
 
     } catch (error) {
       
@@ -222,7 +220,6 @@ const EngineeringRanking = () => {
     const labels = Object.keys(selectedData[0]).filter((key) => key !== 'College');
     
     const data = labels.map((label) => parseInt(selectedData[0][label], 10) || 0);
-    console.log(labels, data)
     // Create chart data for the selected college
     const chartData = {
         labels: labels,
@@ -359,12 +356,22 @@ const EngineeringRanking = () => {
          <h4 style={{ textAlign: 'center' }} className='disclaimer'>
             <img src={sliderArrow} alt="" className="sliderarrow" style={{ transform: 'rotate(90deg)' }} />
             Choose what's important for you
+
+            {/* <h6>*Data Source: NIRF 2023, Retraction Watch Database</h6> */}
           </h4>
 
         </a>
       ) : (
-        <h4 style={{ textAlign: 'center' }} className='disclaimer'>Choose what's important for you </h4>
+        <h4 style={{ textAlign: 'center' }} className='disclaimer'>Choose what's important for you 
+            {/* <h6>*Data Source: NIRF 2023, Retraction Watch Database</h6> */}
+
+        </h4>
       )}
+
+      <div>
+      <h6 style={{textAlign: "center"}}>*Data Source: NIRF 2023, Retraction Watch Database</h6>
+
+      </div>
 
      <input
           type="text"
