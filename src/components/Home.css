@@ -83,16 +83,24 @@
 }
 
 @media screen and (max-width: 768px) {
-  #LawButton{
-    margin-bottom: 80px;
+    .button-container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0px; /* Reduced gap between buttons */
+      justify-items: center; /* Center the buttons horizontally */
+      margin: 0 5px; /* Margin for left and right sides */
+    }
+  
+    .button-link {
+      width: 50%; /* Adjusted width for smaller screens with reduced gap and margin */
+    }
   }
-}
 
 
 
 /*  */
 
-.footer {
+/* .footer {
   position: fixed;
   left: 0;
   bottom: 0;
@@ -100,7 +108,7 @@
   background-color: #f0f0f0;
   padding: 10px 0;
   text-align: center;
-}
+} */
 
 
 
