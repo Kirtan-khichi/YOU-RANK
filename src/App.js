@@ -6,6 +6,7 @@ import MethodologyPage from './components/MethodologyPage';
 import MedicalRankings from './components/MedicalRankings';
 import LawRanking from './components/LawRanking';
 import EngineeringRanking from './components/EngineeringRanking';
+import ManagementRanking from './components/ManagementRanking';
 import './components/styles.css';
 import logo from './assets/Urank-updated.png';
 import './styles.css';
@@ -84,6 +85,7 @@ const App = () => {
           <Route path="/MedicalRankings" element={<MedicalRankings />} />
           <Route path="/LawRanking" element={<LawRanking />} />
           <Route path="/EngineeringRanking" element={<EngineeringRanking />} />
+          <Route path="/ManagementRanking" element={<ManagementRanking />} />
         </Routes>
       </div>
     </Router>

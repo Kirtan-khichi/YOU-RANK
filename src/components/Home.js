@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Medical from '../assets/Medical.png';
 import Law from '../assets/Law_WL.png';
 import Engneering from '../assets/Eng_WL.png';
+import Management from '../assets/Management.png';
 import './Home.css';
 
 const Home = () => {
@@ -19,6 +20,10 @@ const Home = () => {
         <Link to="/EngineeringRanking" className="button-link">
           <img src={Engneering} alt="Engineering Rankings" />
           <div className="button-label">Engineering</div>
+        </Link>
+        <Link to="/ManagementRanking" className="button-link">
+          <img src={Management} alt="Management Rankings" />
+          <div className="button-label">Management</div>
         </Link>
         <Link to="/MedicalRankings" className="button-link">
           <img src={Medical} alt="Medical Rankings" />
