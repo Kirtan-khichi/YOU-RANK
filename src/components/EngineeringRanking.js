@@ -356,11 +356,21 @@ const EngineeringRanking = () => {
          <h4 style={{ textAlign: 'center' }} className='disclaimer'>
             <img src={sliderArrow} alt="" className="sliderarrow" style={{ transform: 'rotate(90deg)' }} />
             Choose what's important for you
+
+            {/* <h6>*Data Source: NIRF 2023, Retraction Watch Database</h6> */}
           </h4>
         </a>
       ) : (
-        <h4 style={{ textAlign: 'center' }} className='disclaimer'>Choose what's important for you </h4>
+        <h4 style={{ textAlign: 'center' }} className='disclaimer'>Choose what's important for you 
+            {/* <h6>*Data Source: NIRF 2023, Retraction Watch Database</h6> */}
+
+        </h4>
       )}
+
+      <div>
+      <h6 style={{textAlign: "center"}}>*Data Source: NIRF 2023, Retraction Watch Database</h6>
+
+      </div>
 
      <input
           type="text"

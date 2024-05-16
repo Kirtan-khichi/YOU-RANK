@@ -140,7 +140,7 @@ const LawRanking = () => {
     }
 
     try { 
-      const response = await fetch('https://cors-anywhere.herokuapp.com/https://ach4l.pythonanywhere.com/urank_law', {
+      const response = await fetch('https://ach4l.pythonanywhere.com/urank_law', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -368,10 +368,15 @@ const LawRanking = () => {
           <h4 style={{ textAlign: 'center' }} className='disclaimer'>
             <img src={sliderArrow} alt="" className="sliderarrow" style={{ transform: 'rotate(90deg)' }} />
             Choose what's important for you
+            <h6>*Data Source: NIRF 2023, Retraction Watch Database</h6>
+
           </h4>        
         </a>
       ) : (
-        <h4 style={{ textAlign: 'center' }}>Choose what's important for you </h4>
+        <h4 style={{ textAlign: 'center' }}>Choose what's important for you 
+          <h6>*Data Source: NIRF 2023, Retraction Watch Database</h6>
+
+        </h4>
       )}
 
       <input
