@@ -362,12 +362,12 @@ const MedicalRankings = () => {
       )}
       <div className={`table-container${showSliders ? 'blur' : ''}`}>
       {isMobile ? (
-        <h4 style={{ textAlign: 'center' }} className='disclaimer'>
-        <img src={sliderArrow} alt="" className="sliderarrow" style={{ transform: 'rotate(90deg)' }} />
-        Choose what's important for you
-        <h6>*Data Source: NIRF 2023, Retraction Watch Database</h6>
-      </h4>
-        
+        <a href="#sliders-content" onClick={toggleSliders}>
+          <h4 style={{ textAlign: 'center' }} className='disclaimer'>
+            <img src={sliderArrow} alt="" className="sliderarrow" style={{ transform: 'rotate(90deg)' }} />
+            Choose what's important for you
+          </h4> 
+        </a>
       ) : (
         <h4 style={{ textAlign: 'center' }}>Choose what's important for you 
             <h6>*Data Source: NIRF 2023, Retraction Watch Database</h6>
@@ -414,7 +414,7 @@ const MedicalRankings = () => {
                   <td style={{ textAlign: 'center' }}>{parseInt(ranking.Rank)}</td>
                   <td style={{ textAlign: 'center' }}>{parseInt(ranking.yourrank) || "-"}</td>
                   <td style={{ position: 'relative', textAlign: 'center' }}>{ranking.college}
-                    {/* <button onClick={() => handleInfoButtonClick(ranking.college)} className="info-button">i</button> */}
+
                   </td>
                   <td style={{ textAlign: 'center' }}>{ranking.Total || "-"}</td>
                 </tr>

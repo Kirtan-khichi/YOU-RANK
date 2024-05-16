@@ -371,6 +371,7 @@ const LawRanking = () => {
             <h6>*Data Source: NIRF 2023, Retraction Watch Database</h6>
 
           </h4>        
+
         </a>
       ) : (
         <h4 style={{ textAlign: 'center' }}>Choose what's important for you 
@@ -418,7 +419,7 @@ const LawRanking = () => {
                   <td style={{ textAlign: 'center' }}>{parseInt(ranking.Rank)}</td>
                   <td style={{ textAlign: 'center' }}>{parseInt(ranking.yourrank) || "-"}</td>
                   <td style={{ position: 'relative', textAlign: 'center' }}>{ranking.college}
-                    {/* <button onClick={() => handleInfoButtonClick(ranking.college)} className="info-button">i</button> */}
+
                   </td>
                   <td style={{ textAlign: 'center' }}>{ranking.Total || "-"}</td>
                 </tr>

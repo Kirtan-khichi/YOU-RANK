@@ -10,7 +10,7 @@ const Home = () => {
     <div className='home'>
       <h2 style={{ textAlign: 'center' }}>Welcome to URank</h2>
       <p style={{ textAlign: 'center' }}>
-        Univeristy rankings cannot be one-size-fits-all.
+        University rankings cannot be one-size-fits-all.
       </p>
       <p style={{ textAlign: 'center' }}>
         Introducing URank where <b>YOU</b> choose the parameters and generate rankings.
