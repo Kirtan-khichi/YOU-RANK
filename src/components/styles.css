@@ -257,6 +257,30 @@ body {
 }
 
 
+.floating-share-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999; /* Ensure it's above other content */
+}
+
+.floating-share-button button {
+  background-color: #c1b09d;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 16px;
+  outline: none;
+}
+
+.floating-share-button button:hover {
+  background-color: #D9CDBF;
+}
+
+
+
 
 @media screen and (max-width: 768px) {
   .flex-container {

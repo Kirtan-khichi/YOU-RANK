@@ -28,15 +28,17 @@ const MedicalRankings = () => {
   const [selectedSortParam, setSelectedSortParam] = useState('');
   const [selectedRankingParam, setSelectedRankingParam] = useState('');
   const [selectedCollegeChartData, setSelectedCollegeChartData] = useState(null);
-  const [showAdditionalInfo, setShowAdditionalInfo] = useState(false); // New state to track additional info visibility
+  const [showAdditionalInfo, setShowAdditionalInfo] = useState(false);
+  const [sharedParameters, setSharedParameters] = useState(''); // State to store shared parameters
 
   const slidersRef = useRef(null);
   const tableRef = useRef(null);
 
   useEffect(() => {
     fetchData();
-    fetchAdditionalData();
+    // fetchAdditionalData();
     checkIfMobile();
+    checkURLParameters();
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
@@ -75,16 +77,16 @@ const MedicalRankings = () => {
     }
   };
 
-  const fetchAdditionalData = async () => {
-    try {
-      const response = await fetch("data/MedicalStudentPdfData2023.csv");
-      const text = await response.text();
-      const { data, errors } = Papa.parse(text, { header: true });
-      setAdditionalData(data);
-    } catch (error) {
-      console.error('Error fetching additional data:', error);
-    }
-  };
+  // const fetchAdditionalData = async () => {
+  //   try {
+  //     const response = await fetch("data/LawStudentPdfData2023.csv");
+  //     const text = await response.text();
+  //     const { data, errors } = Papa.parse(text, { header: true });
+  //     setAdditionalData(data);
+  //   } catch (error) {
+  //     console.error('Error fetching additional data:', error);
+  //   }
+  // };
 
   const calculateScore = (ranking) => {
     let totalScore = 0;
@@ -129,7 +131,6 @@ const MedicalRankings = () => {
     }));
   
     setRankings(rankedRankings);
-    // console.log(rankedRankings);
   
     setShowSliders(false);
     setSliderAnimation(false);
@@ -139,7 +140,6 @@ const MedicalRankings = () => {
       selectedParameters[param] = weight;
     }
 
-
     try { 
       const response = await fetch('https://ach4l.pythonanywhere.com/urank_med', {
         method: 'POST',
@@ -148,7 +148,7 @@ const MedicalRankings = () => {
         },
         body: JSON.stringify(selectedParameters), 
       });
-  
+
       if (!response.ok) {
         throw new Error('Failed to save scores to the database');
       }
@@ -156,11 +156,10 @@ const MedicalRankings = () => {
       const textData = await response.text();
 
     } catch (error) {
-      
       console.error('Error saving scores:', error);
     }
   };
-  
+
   const requestSort = (key) => {
     let direction = 'ascending';
     if (sortConfig.key === key && sortConfig.direction === 'ascending') {
@@ -204,35 +203,30 @@ const MedicalRankings = () => {
   const handleClickOutside = (event) => {
     if (slidersRef.current && !slidersRef.current.contains(event.target)) {
       setShowSliders(false);
+     
       setSliderAnimation(false);
     }
   };
 
   const handleInfoButtonClick = async (collegeName) => {
-    // Find additional data for the selected college
     const selectedData = additionalData.filter((item) => item.College === collegeName);
     setSelectedCollegeData(selectedData);
   
-    // Initialize an array to store chart data for each program
     const chartDataArray = [];
   
-    // Iterate over each row of additional data
     selectedData.forEach((dataItem) => {
-      // Extract program name and data for the row
       const programName = dataItem.Program;
       const labels = Object.keys(dataItem).filter((key) => key.match(/^\d{4}-\d{2}$/));
       const data = labels.map((label) => parseInt(dataItem[label], 10) || 0);
   
-      // Reverse the order of labels and data for display
       const reversedLabels = [...labels].reverse();
       const reversedData = [...data].reverse();
   
-      // Create chart data for the program
       const chartData = {
         labels: reversedLabels,
         datasets: [
           {
-            label: programName, // Program name as label
+            label: programName,
             data: reversedData,
             fill: false,
             borderColor: 'rgb(75, 192, 192)',
@@ -240,18 +234,13 @@ const MedicalRankings = () => {
         ],
       };
   
-      // Push chart data for the program into the array
       chartDataArray.push(chartData);
     });
   
-    // Update the state with the array of chart data
     setSelectedCollegeChartData(chartDataArray);
     setShowAdditionalInfo(true);
   };
   
-  
-  
-
   const handleBackButtonClick = () => {
     setShowAdditionalInfo(false);
   };
@@ -280,158 +269,191 @@ const MedicalRankings = () => {
     }
   };
 
+  // Function to extract parameters from URL and apply them
+  const checkURLParameters = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const sharedParams = urlParams.get('params');
+    if (sharedParams) {
+      const parsedParams = JSON.parse(sharedParams);
+      setParameters(parsedParams);
+      setSharedParameters(sharedParams);
+    }
+  };
+
+  // Function to generate URL with selected parameters
+  const generateShareableURL = () => {
+    const urlParams = new URLSearchParams();
+    urlParams.append('params', JSON.stringify(parameters));
+    const baseUrl = window.location.origin + window.location.pathname;
+    const shareableURL = baseUrl + '?' + urlParams.toString();
+    return shareableURL;
+  };
+
+  const copyToClipboard = () => {
+    const shareableURL = generateShareableURL();
+    navigator.clipboard.writeText(shareableURL)
+      .then(() => alert("Link copied to clipboard!"))
+      .catch(error => console.error("Error copying link: ", error));
+  };
+
   return (
     <div className={`overall-rankings`}>
-      {isMobile && (
-        <div className="show-sliders-mobile">
-          <button onClick={toggleSliders} className='button-text increase-width'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Change Parameters </b> &nbsp;<img src={sliderArrow} alt="" className="sliderarrow" />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
-        </div>
-      )}
-      {showSliders && (
-        <div className={`sliders-container ${sliderAnimation ? 'show' : ''}`} ref={slidersRef}>
-          <div className="sliders-overlay" onClick={toggleSliders}></div>
-          <button className="submit-button" onClick={applyScores}>
-              Calculate Score
-            </button>
-          <div className="sliders-content">
-            {Object.entries(initialParameters).map(([param, { weight, max }]) => (
-              <div className="slider-item" key={param}>
-                <div className="slider-wrapper">
-                  <label className="slider-label" htmlFor={`${param}-weight`}>
-                    {param}
-                  </label>
-                  <input
-                    className="slider"
-                    type="range"
-                    id={`${param}-weight`}
-                    name={`${param}-weight`}
-                    min="0"
-                    max="1"
-                    step="0.01"
-                    value={parameters[param].weight}
-                    onChange={(e) => handleSliderChange(param, e.target.value)}
-                    style={{
-                      backgroundImage: `linear-gradient(to right, #576D46 ${parameters[
-                        param
-                      ].weight * 100}%, #FBFBFC ${parameters[param].weight * 100}%)`,
-                    }}
-                  />
-                  <span className="slider-value">{parameters[param].weight}</span>
-                </div>
-              </div>
-            ))}
+  {isMobile && (
+    <div className="show-sliders-mobile">
+      <button onClick={toggleSliders} className='button-text increase-width'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Change Parameters </b> &nbsp;<img src={sliderArrow} alt="" className="sliderarrow" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
+    </div>
+  )}
+  {showSliders && (
+    <div className={`sliders-container ${sliderAnimation ? 'show' : ''}`} ref={slidersRef}>
+      <div className="sliders-overlay" onClick={toggleSliders}></div>
+      <button className="submit-button" onClick={applyScores}>
+        Calculate Score
+      </button>
+      <div className="sliders-content">
+        {Object.entries(initialParameters).map(([param, { weight, max }]) => (
+          <div className="slider-item" key={param}>
+            <div className="slider-wrapper">
+              <label className="slider-label" htmlFor={`${param}-weight`}>
+                {param}
+              </label>
+              <input
+                className="slider"
+                type="range"
+                id={`${param}-weight`}
+                name={`${param}-weight`}
+                min="0"
+                max="1"
+                step="0.01"
+                value={parameters[param].weight}
+                onChange={(e) => handleSliderChange(param, e.target.value)}
+                style={{
+                  backgroundImage: `linear-gradient(to right, #576D46 ${parameters[
+                    param
+                  ].weight * 100}%, #FBFBFC ${parameters[param].weight * 100}%)`,
+                }}
+              />
+              <span className="slider-value">{parameters[param].weight}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )}
+
+  {!isMobile && (
+    <div className="sliders-content">
+      <h3 style={{ textAlign: 'center' }}>Choose your parameters</h3>
+      {Object.entries(initialParameters).map(([param, { weight, max }]) => (
+        <div className="slider-item" key={param}>
+          <div className="slider-wrapper">
+            <label className="slider-label" htmlFor={`${param}-weight`}>
+              {param}
+            </label>
+            <input
+              className="slider"
+              type="range"
+              id={`${param}-weight`}
+              name={`${param}-weight`}
+              min="0"
+              max="1"
+              step="0.01"
+              value={parameters[param].weight}
+              onChange={(e) => handleSliderChange(param, e.target.value)}
+              style={{
+                backgroundImage: `linear-gradient(to right, #576D46 ${parameters[
+                  param
+                ].weight * 100}%, #FBFBFC ${parameters[param].weight * 100}%)`,
+              }}
+            />
+            <span className="slider-value">{parameters[param].weight}</span>
           </div>
         </div>
-      )}
-
-      {!isMobile && (
-        <div className="sliders-content">
-          
-          <h3 style={{ textAlign: 'center' }}>Choose your parameters</h3>
-          {Object.entries(initialParameters).map(([param, { weight, max }]) => (
-            <div className="slider-item" key={param}>
-              <div className="slider-wrapper">
-                <label className="slider-label" htmlFor={`${param}-weight`}>
-                  {param}
-                </label>
-                <input
-                  className="slider"
-                  type="range"
-                  id={`${param}-weight`}
-                  name={`${param}-weight`}
-                  min="0"
-                  max="1"
-                  step="0.01"
-                  value={parameters[param].weight}
-                  onChange={(e) => handleSliderChange(param, e.target.value)}
-                  style={{
-                    backgroundImage: `linear-gradient(to right, #576D46 ${parameters[
-                      param
-                    ].weight * 100}%, #FBFBFC ${parameters[param].weight * 100}%)`,
-                  }}
-                />
-                <span className="slider-value">{parameters[param].weight}</span>
-              </div>
-            </div>
-          ))}
-          <button className="submit-button" onClick={applyScores}>
-              Calculate Score
-            </button>
-        </div>
-      )}
-      <div className={`table-container${showSliders ? 'blur' : ''}`}>
-      {isMobile ? (
-        <a href="#sliders-content" onClick={toggleSliders}>
-          <h4 style={{ textAlign: 'center' }} className='disclaimer'>
-            <img src={sliderArrow} alt="" className="sliderarrow" style={{ transform: 'rotate(90deg)' }} />
-            Choose what's important for you
-          </h4> 
-        </a>
-      ) : (
-        <h4 style={{ textAlign: 'center' }}>Choose what's important for you 
-            <h6>*Data Source: NIRF 2023, Retraction Watch Database</h6>
-        </h4>
-      )}
-      
-       
-      <input
-          type="text"
-          placeholder="Search college"
-          value={searchTerm}
-          onChange={handleSearch}
-          className="search-bar"
-        />
-        <div className='dropdownMenu'>
-          <select value={selectedSortParam} onChange={handleSortParamChange}>
-            <option value="">Select one parameter</option>
-            {Object.keys(initialParameters).map(param => (
-              <option key={param} value={param}>{param}</option>
-            ))}
-          </select>
-        </div>
-        <div className="table-wrapper">
-          <table className="scroll-table">
-            <thead>
-              <tr>
-                <th onClick={() => requestSort('Rank')}>
-                  NIRF RANK {sortConfig.key === 'Rank' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : '▲'}
-                </th>
-                <th onClick={() => requestSort('yourrank')}>
-                  Your rank {sortConfig.key === 'yourrank' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : '▲'}
-                </th>
-                <th onClick={() => requestSort('college')}>
-                  College Name {sortConfig.key === 'college' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : null}
-                </th>
-                <th onClick={() => requestSort('Total')}>
-                  Your Score {sortConfig.key === 'Total' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : null}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {sortedFilteredRankings.map((ranking, index) => (
-                <tr key={index}>
-                  <td style={{ textAlign: 'center' }}>{parseInt(ranking.Rank)}</td>
-                  <td style={{ textAlign: 'center' }}>{parseInt(ranking.yourrank) || "-"}</td>
-                  <td style={{ position: 'relative', textAlign: 'center' }}>{ranking.college}
-
-                  </td>
-                  <td style={{ textAlign: 'center' }}>{ranking.Total || "-"}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-      {showAdditionalInfo && (
-        <div className="additional-info-modal" style={{ top: `calc(200px + ${tableScrollTop}px)` }}>
-          <button className="backButton" onClick={handleBackButtonClick}>
-            <span style={{ fontSize: '24px' }}>&larr;</span> Back
-          </button>
-          <ChartComponent chartData={selectedCollegeChartData}/>
-        </div>
-      )}
+      ))}
+      <button className="submit-button" onClick={applyScores}>
+        Calculate Score
+      </button>
     </div>
+  )}
+
+  <div className={`table-container${showSliders ? 'blur' : ''}`}>
+    {isMobile ? (
+      <a href="#sliders-content" onClick={toggleSliders}>
+        <h4 style={{ textAlign: 'center' }} className='disclaimer'>
+          <img src={sliderArrow} alt="" className="sliderarrow" style={{ transform: 'rotate(90deg)' }} />
+          Choose what's important for you
+          <h6>*Data Source: NIRF 2023, Retraction Watch Database</h6>
+        </h4>        
+      </a>
+    ) : (
+      <h4 style={{ textAlign: 'center' }}>Choose what's important for you 
+        <h6>*Data Source: NIRF 2023, Retraction Watch Database</h6>
+      </h4>
+    )}
+
+    <input
+      type="text"
+      placeholder="Search college"
+      value={searchTerm}
+      onChange={handleSearch}
+      className="search-bar"
+    />
+    <div className='dropdownMenu'>
+      <select value={selectedSortParam} onChange={handleSortParamChange}>
+      <option value="">Select one parameter</option>
+      {Object.keys(initialParameters).map(param => (
+        <option key={param} value={param}>{param}</option>
+      ))}
+    </select>
+  </div>
+  <div className="table-wrapper" ref={tableRef}>
+    <table className="scroll-table">
+      <thead>
+        <tr>
+          <th onClick={() => requestSort('Rank')}>
+            NIRF RANK {sortConfig.key === 'Rank' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : '▲'}
+          </th>
+          <th onClick={() => requestSort('yourrank')}>
+            Your rank {sortConfig.key === 'yourrank' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : '▲'}
+          </th>
+          <th onClick={() => requestSort('college')}>
+            College Name {sortConfig.key === 'college' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : null}
+          </th>
+          <th onClick={() => requestSort('Total')}>
+            Your Score {sortConfig.key === 'Total' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : null}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {sortedFilteredRankings.map((ranking, index) => (
+          <tr key={index} onClick={() => handleInfoButtonClick(ranking.college)}>
+            <td style={{ textAlign: 'center' }}>{parseInt(ranking.Rank)}</td>
+            <td style={{ textAlign: 'center' }}>{parseInt(ranking.yourrank) || "-"}</td>
+            <td style={{ position: 'relative', textAlign: 'center' }}>{ranking.college}</td>
+            <td style={{ textAlign: 'center' }}>{ranking.Total || "-"}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div className="floating-share-button" onClick={copyToClipboard}>
+  <button>
+    <i className="fa fa-share-alt"></i> {/* Font Awesome share icon */}
+  </button>
+</div>
+
+{showAdditionalInfo && (
+  <div className="additional-info-modal" style={{ top: `calc(200px + ${tableScrollTop}px)` }}>
+    <button className="backButton" onClick={handleBackButtonClick}>
+      <span style={{ fontSize: '24px' }}>&larr;</span> Back
+    </button>
+    <ChartComponent chartData={selectedCollegeChartData}/>
+  </div>
+)}
+
+   </div>
   );
 };
 
