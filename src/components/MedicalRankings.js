@@ -15,6 +15,16 @@ const initialParameters = {
   'Peer reputation': { weight: 0.1, max: 100 },
 };
 
+const maxValues = {
+  'Faculty Student Ratio': 30,
+  'Faculty Quality': 20,
+  'Region Diversity': 30,
+  'Woman diversity': 30,
+  'Peer reputation': 100,
+};
+
+
+
 const MedicalRankings = () => {
     const [rankings, setRankings] = useState([]);
     const [parameters, setParameters] = useState(initialParameters);
@@ -61,16 +71,13 @@ const MedicalRankings = () => {
     useEffect(() => {
       const checkURLParameters = () => {
         const urlParams = new URLSearchParams(window.location.search);
-        const sharedParams = urlParams.get('params');
-        if (sharedParams) {
-          const parsedParams = JSON.parse(decodeURIComponent(sharedParams));
+        const sharedID = urlParams.get('id');
+        if (sharedID) {
+          const parsedParams = dehashParams(sharedID, maxValues);
           setParameters(parsedParams);
     
           const updatedRankings = rankings.map((ranking) => {
             const totalScore = calculateScoreWithParams(ranking, parsedParams);
-            // console.log('Ranking:', ranking);
-            // console.log('Total Score:', totalScore);
-            
             return {
               ...ranking,
               Total: totalScore,
@@ -148,7 +155,6 @@ const MedicalRankings = () => {
           totalScore += (value / max) * weight;
           totalWeight += weight;
         } else {
-          // Handle cases where value is not a valid number
           console.warn(`Invalid value for parameter "${param}": ${ranking[param]}`);
         }
       }
@@ -246,6 +252,9 @@ const MedicalRankings = () => {
       } catch (error) {
         console.error('Error saving scores:', error);
       }
+
+      const shareableURL = generateShareableURL();
+      console.log('Shareable URL:', shareableURL);
     };
   
     const requestSort = (key) => {
@@ -328,11 +337,41 @@ const MedicalRankings = () => {
   };
   // Function to generate URL with selected parameters
   const generateShareableURL = () => {
-    const urlParams = new URLSearchParams();
-    urlParams.append('params', JSON.stringify(parameters));
+    const id = hashParams(parameters);
     const baseUrl = window.location.origin + window.location.pathname;
-    const shareableURL = baseUrl + '?' + urlParams.toString();
-    return shareableURL;
+    return `${baseUrl}?id=${id}`;
+  };
+
+  
+  const formatWeight = (weight) => {
+    return Math.round(weight * 100).toString().padStart(2, '0').slice(0, 2);
+  };
+  
+  // Hashing function to encode URL parameters into a 12-digit ID
+  const hashParams = (params) => {
+    let id = '';
+    for (const [key, value] of Object.entries(params)) {
+      id += formatWeight(value.weight);  // Convert weight to two digits
+    }
+    return id.padEnd(10, '0'); // Ensure the ID is 10 digits long
+  };
+  
+  const dehashParams = (id, maxValues) => {
+    const keys = Object.keys(maxValues);
+    const expectedLength = keys.length * 2;
+  
+    // if (id.length !== expectedLength) {
+    //   throw new Error("Mismatch between the number of keys and ID length");
+    // }
+  
+    const params = {};
+    for (let i = 0; i < id.length; i += 2) {
+      const weight = parseFloat((parseInt(id.slice(i, i + 2), 10) / 100).toFixed(2));
+      const key = keys[i / 2];
+      params[key] = { weight, max: maxValues[key] };
+    }
+  
+    return params;
   };
   
   
