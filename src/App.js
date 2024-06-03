@@ -35,6 +35,11 @@ const App = () => {
 
   return (
     <Router>
+      <meta name="description" content="Welcome to U Rank, your premier destination for accessing the best university rankings tailored to your preferences. Here at U Rank, we empower users with personalized insights, ensuring you discover the top-ranked institutions that align with your specific criteria.
+Diving into our methodology, we pride ourselves on leveraging the esteemed NIRF 2023 rankings for most parameters, including those defining the best university rankings. Trust in U Rank as we deliver rankings grounded in the comprehensive assessment criteria outlined by NIRF. For a deeper dive into our methodology, explore the NIRF Parameters section on our platform.
+In our commitment to transparency and innovation, U Rank introduces a groundbreaking approach to evaluating research quality. Utilizing the NIRF parameter for Research Quality, we integrate a penalty system for institutions with retractions. Our meticulously calculated penalty formula ensures that any institution with retractions faces a proportional deduction in their research points. This reinforces accountability and integrity within the academic community, setting a new standard for best university rankings.
+At U Rank, we're not just pioneering a new approach; we're setting the benchmark for excellence in rankings worldwide. Our data sources, including NIRF 2023 and the Retraction Watch Database, are carefully curated to ensure reliability and accuracy, making U Rank your trusted partner in informed decision-making.
+Experience the difference with U Rank as we redefine what it means to discover the best university rankings. Join us on a journey to unlock the full potential of academic excellence and integrity. Start exploring today!" />
       <div className={darkMode ? 'app-container dark-mode' : 'app-container'}>
         <div className="app-header" style={{ maxHeight: "20vh" }}>
           <img src={logo} alt="Logo" className="app-logo" style={{ width: '100px' }} />
