@@ -1,0 +1,32 @@
+.share-popover {
+  position: relative;
+  display: inline-block;
+}
+
+.share-popover button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.popover-content {
+  position: absolute;
+  top: -18vh; /* positions popover below the button */
+  left: -15vh;
+  /* transform: translateX(-50%); */
+  display: flex;
+  flex-direction: column; /* stack elements vertically */
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  z-index: 1000;
+}
+
+.popover-content h1 {
+  margin: 0;
+  font-size: 14px;
+  text-align: center;
+}
