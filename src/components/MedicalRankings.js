@@ -145,10 +145,11 @@ const MedicalRankings = () => {
     const calculateScoreWithParams = (ranking, params) => {
       let totalScore = 0;
       let totalWeight = 0;
+      console.log(params);
     
       for (const param in params) {
         const weight = params[param].weight;
-        const max = initialParameters[param].max;
+        const max = initialParameters[param] ? initialParameters[param].max : undefined;
         const value = parseFloat(ranking[param]); // Convert to float
     
         if (!isNaN(value) && weight !== undefined && max !== undefined) {
@@ -335,7 +336,6 @@ const MedicalRankings = () => {
     navigator.clipboard.writeText(shareableURL)
       .catch(error => console.error("Error copying link: ", error));
   };
-  // Function to generate URL with selected parameters
   const generateShareableURL = () => {
     const id = hashParams(parameters);
     const baseUrl = window.location.origin + window.location.pathname;
@@ -344,33 +344,30 @@ const MedicalRankings = () => {
 
   
   const formatWeight = (weight) => {
+    if (weight === 1) {
+      return "100"; // Special case for weight equal to 1
+    }
     return Math.round(weight * 100).toString().padStart(2, '0').slice(0, 2);
   };
   
-  // Hashing function to encode URL parameters into a 12-digit ID
   const hashParams = (params) => {
+    console.log("param", params);
     let id = '';
-    for (const [key, value] of Object.entries(params)) {
-      id += formatWeight(value.weight);  // Convert weight to two digits
+    for (const key of Object.keys(params)) {
+      id += formatWeight(params[key].weight) + ",";  // Convert weight to two digits and append comma
     }
-    return id.padEnd(10, '0'); // Ensure the ID is 10 digits long
+    return id.slice(0, -1).padEnd(10, '0');  // Remove last comma and pad with zeros
   };
   
   const dehashParams = (id, maxValues) => {
     const keys = Object.keys(maxValues);
-    const expectedLength = keys.length * 2;
-  
-    // if (id.length !== expectedLength) {
-    //   throw new Error("Mismatch between the number of keys and ID length");
-    // }
-  
     const params = {};
-    for (let i = 0; i < id.length; i += 2) {
-      const weight = parseFloat((parseInt(id.slice(i, i + 2), 10) / 100).toFixed(2));
-      const key = keys[i / 2];
-      params[key] = { weight, max: maxValues[key] };
+    const weights = id.split(",");
+    for (let i = 0; i < weights.length; i++) {
+      const weight = parseFloat((parseInt(weights[i], 10) / 100).toFixed(2));
+      const key = keys[i];
+      params[key] = { weight, max: maxValues[key].max };
     }
-  
     return params;
   };
   
