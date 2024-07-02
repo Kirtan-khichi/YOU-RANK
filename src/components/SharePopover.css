@@ -4,25 +4,78 @@
 }
 
 .share-popover button {
-  background: none;
+  background: #C1B09c;
   border: none;
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.15);
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
 }
 
 .popover-content {
   position: absolute;
-  top: -18vh; /* positions popover below the button */
-  left: -15vh;
-  /* transform: translateX(-50%); */
-  display: flex;
-  flex-direction: column; /* stack elements vertically */
+  top: 10vh; /* Adjust as needed */
+  right: 5vh; /* Adjust as needed */
+  display: none;
+  flex-direction: column;
   align-items: center;
   gap: 10px;
   padding: 10px;
   background-color: white;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.15);
   border-radius: 5px;
   z-index: 1000;
+  transition: transform 0.5s, width 0.5s, height 0.5s;
+  transition-delay: 1s, 0.5s, 0.5s;
+  transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.popover-content.show {
+  display: flex;
+  width: 240px; /* Adjust as needed */
+  height: auto; /* Adjust as needed */
+  transform: translateY(0);
+  transition-delay: 0s, 0.5s, 0.5s;
+}
+
+.popover-content::before {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: white;
+  left: calc(50% - 8px);
+  bottom: -8px; /* Adjust as needed */
+  transform: rotate(45deg);
+  border-radius: 2px;
+  transition: 0.5s;
+}
+
+.popover-content.show::before {
+  bottom: -16px; /* Adjust as needed */
+  transition-delay: 0.5s;
+}
+
+.share-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  gap: 20px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-30px);
+  transition: 0.25s;
+}
+
+.popover-content.show .share-buttons {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0px);
+  transition-delay: 0.75s;
 }
 
 .popover-content h1 {

@@ -259,7 +259,7 @@ body {
 
 .floating-share-button {
   position: fixed;
-  bottom: 20px;
+  top: 20px;
   right: 20px;
   z-index: 9999; /* Ensure it's above other content */
 }
@@ -280,7 +280,410 @@ body {
 }
 
 
+.floating-menu {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+}
 
+.floating-button {
+  background-color: #576D46;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  padding: 15px;
+  cursor: pointer;
+  font-size: 24px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.menu-options {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  bottom: 70px;
+  right: 0;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.menu-option {
+  background-color: #fff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  color: #333;
+  transition: background-color 0.3s;
+}
+
+.menu-option:hover {
+  background-color: #f0f0f0;
+}
+
+.menu-option svg {
+  margin-right: 10px;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 34px;
+  height: 20px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-switch {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.toggle-switch:before {
+  position: absolute;
+  content: "";
+  height: 12px;
+  width: 12px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .toggle-switch {
+  background-color: #576D46;
+}
+
+input:checked + .toggle-switch:before {
+  transform: translateX(14px);
+}
+
+.custom-checkbox {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  font-size: 16px;
+  color: #333;
+  transition: color 0.3s;
+}
+
+.custom-checkbox input[type="checkbox"] {
+  display: none;
+}
+
+.custom-checkbox .checkmark {
+  width: 24px;
+  height: 24px;
+  border: 2px solid #333;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  transition: background-color 0.3s, border-color 0.3s, transform 0.3s;
+  transform-style: preserve-3d;
+}
+
+.custom-checkbox .checkmark::before {
+  content: "\2713";
+  font-size: 16px;
+  color: transparent;
+  transition: color 0.3s, transform 0.3s;
+}
+
+.custom-checkbox input[type="checkbox"]:checked + .checkmark {
+  background-color: #333;
+  border-color: #333;
+  transform: scale(1.1) rotateZ(360deg) rotateY(360deg);
+}
+
+.custom-checkbox input[type="checkbox"]:checked + .checkmark::before {
+  color: #fff;
+}
+
+.custom-checkbox:hover {
+  color: #666;
+}
+
+.custom-checkbox:hover .checkmark {
+  border-color: #666;
+  background-color: #f0f0f0;
+  transform: scale(1.05);
+}
+
+.custom-checkbox input[type="checkbox"]:focus + .checkmark {
+  box-shadow: 0 0 3px 2px rgba(0, 0, 0, 0.2);
+  outline: none;
+}
+
+.custom-checkbox .checkmark,
+.custom-checkbox input[type="checkbox"]:checked + .checkmark {
+  transition: background-color 1.3s, border-color 1.3s, color 1.3s, transform 0.3s;
+}
+
+.chatbot-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 400px;
+  max-width: 100%;
+  height: 400px;
+  background: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+}
+
+.chatbot-header {
+  background: #333;
+  color: white;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-chatbot {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.chatbot-content {
+  padding: 10px;
+  overflow-y: auto;
+}
+
+
+/* ********************************************** */
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.card {
+  width: 250px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card-header {
+  background: #333;
+  color: white;
+  padding: 10px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rank {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.card-content {
+  padding: 15px;
+  text-align: center;
+}
+
+.college-name {
+  font-size: 1.2rem;
+  margin: 10px 0;
+}
+
+.score {
+  font-size: 1rem;
+  margin: 10px 0;
+}
+
+.custom-checkbox {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  font-size: 16px;
+  color: #333;
+  transition: color 0.3s;
+}
+
+.custom-checkbox input[type="checkbox"] {
+  display: none;
+}
+
+.custom-checkbox .checkmark {
+  width: 24px;
+  height: 24px;
+  border: 2px solid #333;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  transition: background-color 0.3s, border-color 0.3s, transform 0.3s;
+  transform-style: preserve-3d;
+}
+
+.custom-checkbox .checkmark::before {
+  content: "\2713";
+  font-size: 16px;
+  color: transparent;
+  transition: color 0.3s, transform 0.3s;
+}
+
+.custom-checkbox input[type="checkbox"]:checked + .checkmark {
+  background-color: #333;
+  border-color: #333;
+  transform: scale(1.1) rotateZ(360deg) rotateY(360deg);
+}
+
+.custom-checkbox input[type="checkbox"]:checked + .checkmark::before {
+  color: #fff;
+}
+
+.custom-checkbox:hover {
+  color: #666;
+}
+
+.custom-checkbox:hover .checkmark {
+  border-color: #666;
+  background-color: #f0f0f0;
+  transform: scale(1.05);
+}
+
+.custom-checkbox input[type="checkbox"]:focus + .checkmark {
+  box-shadow: 0 0 3px 2px rgba(0, 0, 0, 0.2);
+  outline: none;
+}
+
+.custom-checkbox .checkmark,
+.custom-checkbox input[type="checkbox"]:checked + .checkmark {
+  transition: background-color 1.3s, border-color 1.3s, color 1.3s, transform 0.3s;
+}
+
+.card-footer {
+  padding: 10px;
+  border-top: 1px solid #ddd;
+  text-align: right;
+}
+
+.info-button {
+  background: #333;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.info-button:hover {
+  background: #555;
+}
+
+.compare-button {
+  background: #333;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 20px auto;
+  display: block;
+}
+
+.compare-button:hover {
+  background: #555;
+}
+
+.chatbot-container {
+  position: fixed;
+  bottom: 0;
+  left: 3vh; /* Change this from right: 0; to left: 0; */
+  width: 42vh;
+  max-width: 100%;
+  height: 400px;
+  background: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  margin-left: 8px;
+}
+
+.chatbot-header {
+  background: #333;
+  color: white;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-chatbot {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.chatbot-content {
+  padding: 10px;
+  overflow-y: auto;
+  white-space: pre-wrap; /* Preserve whitespace and wrap text */
+}
+/* **************************************************************** */
+
+.floating-compare-button {
+  position: fixed;
+  bottom: 60vh;
+  right: 10vh;
+  z-index: 9999; /* Ensure it's above other content */
+}
+
+.compare-button {
+  background-color: #333;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 20px auto;
+  display: block;
+}
+
+.compare-button:hover {
+  background-color: #555;
+}
 
 @media screen and (max-width: 768px) {
   .flex-container {
@@ -378,7 +781,7 @@ body {
     left: 0;
     width: 30px;
     height: 90vh;
-    top: 184px;
+    top: 22vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -450,7 +853,8 @@ body {
   }
 
   .submit-button {
-    background-color: #7C6C5D;    
+    background-color: #7C6C5D;
+    background-image: linear-gradient(to bottom, #8D745D, #7C6C5D);
     color: white;
     border: none;
     border-radius: 5px;
@@ -460,8 +864,23 @@ body {
     width: 100%;
     text-align: center;
     margin-top: 10px;
-
+    transition: all 0.3s ease;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2), 2px 2px 5px rgba(0, 0, 0, 0.15);
   }
+  
+  .submit-button:hover {
+    background-color: #6B5A4C;
+    background-image: linear-gradient(to bottom, #7C6C5D, #6B5A4C);
+    box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.25), 3px 3px 7px rgba(0, 0, 0, 0.2);
+  }
+  
+  .submit-button:active {
+    background-color: #5A4A3C;
+    background-image: linear-gradient(to bottom, #6B5A4C, #5A4A3C);
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.15), 1px 1px 3px rgba(0, 0, 0, 0.1);
+    transform: translateY(1px);
+  }
+  
 
   .backButton {
     /* background-color: #7C6C5D;    */
@@ -715,7 +1134,7 @@ body {
   margin-left: calc(35% - 26%);
   width: 80%;
   height: 30px;
-  top: 122px;
+  top: 22vh;
   display: flex;
   align-items: center;
   justify-content: center;

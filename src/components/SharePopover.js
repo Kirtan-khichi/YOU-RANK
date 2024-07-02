@@ -9,37 +9,32 @@ import {
 } from 'react-share';
 import './SharePopover.css';
 
-const SharePopover = ({ generateShareableURL }) => {
-  const [isOpen, setIsOpen] = useState(false);
+const SharePopover = ({ shareableURL, message }) => {
+  const [showPopover, setShowPopover] = useState(false);
 
-  const togglePopover = () => {
-    setIsOpen(!isOpen);
+  const handleTogglePopover = () => {
+    setShowPopover(!showPopover);
   };
-
-  const url = generateShareableURL();
-  const message = `Check out this management ranking:`;
 
   return (
     <div className="share-popover">
-      <button onClick={togglePopover}>
-        <i className="fa fa-share-alt" />
+      <button className={showPopover ? 'active' : ''} onClick={handleTogglePopover}>
+        {showPopover ? 'Close (X)' : 'Share'}
       </button>
-      {isOpen && (
-        <div className="popover-content">
-          <h1>Link is copied to clipboard</h1>
-          <div className="share-buttons">
-            <WhatsappShareButton url={url} title={message}>
-              <WhatsappIcon size={32} round={true} />
-            </WhatsappShareButton>
-            <FacebookShareButton url={url} quote={message}>
-              <FacebookIcon size={32} round={true} />
-            </FacebookShareButton>
-            <LinkedinShareButton url={url} title={message}>
-              <LinkedinIcon size={32} round={true} />
-            </LinkedinShareButton>
-          </div>
+      <div className={`popover-content ${showPopover ? 'show' : ''}`}>
+        <h1>Link is copied to clipboard</h1>
+        <div className="share-buttons">
+          <WhatsappShareButton url={shareableURL} title={message}>
+            <WhatsappIcon size={32} round={true} />
+          </WhatsappShareButton>
+          <FacebookShareButton url={shareableURL} quote={message}>
+            <FacebookIcon size={32} round={true} />
+          </FacebookShareButton>
+          <LinkedinShareButton url={shareableURL} title={message}>
+            <LinkedinIcon size={32} round={true} />
+          </LinkedinShareButton>
         </div>
-      )}
+      </div>
     </div>
   );
 };
