@@ -33,8 +33,12 @@ const App = () => {
   };
 
   useEffect(() => {
-    const pathname = window.location.pathname;
-    setShowCompareButton(checkIfRankingPage(pathname));
+    const interval = setInterval(() => {
+      const pathname = window.location.pathname;
+      setShowCompareButton(checkIfRankingPage(pathname));
+    }, 1000);
+
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
