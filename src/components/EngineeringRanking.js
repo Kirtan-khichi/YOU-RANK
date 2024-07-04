@@ -202,7 +202,7 @@ const EngineeringRanking = ({ compareMode }) => {
     }
 
     try {
-      const response = await fetch('https://ach4l.pythonanywhere.com/urank_law', {
+      const response = await fetch('https://ach4l.pythonanywhere.com/urank_eng', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -316,9 +316,7 @@ const EngineeringRanking = ({ compareMode }) => {
       ]
     };
 
-    console.log('API Key:', apiKey);
-    console.log('API URL:', apiUrl);
-    console.log('Request Data:', JSON.stringify(requestData));
+    
 
     try {
       const response = await fetch(apiUrl, {
@@ -335,7 +333,6 @@ const EngineeringRanking = ({ compareMode }) => {
       }
 
       const data = await response.json();
-      console.log('API Response:', JSON.stringify(data, null, 2));
 
       if (
         data &&
@@ -360,7 +357,6 @@ const EngineeringRanking = ({ compareMode }) => {
   const copyToClipboard = () => {
     const shareableURL = generateShareableURL();
     setShareableURL(shareableURL);
-    console.log(shareableURL, 'hiii');
     navigator.clipboard.writeText(shareableURL)
       .catch(error => console.error("Error copying link: ", error));
   };
@@ -368,7 +364,7 @@ const EngineeringRanking = ({ compareMode }) => {
   const generateShareableURL = () => {
     const id = hashParams(parameters);
     const baseUrl = window.location.origin + window.location.pathname;
-    return `${baseUrl}?id=${id}&category=Law`;
+    return `${baseUrl}?id=${id}&category=Eng`;
   };
 
   const formatWeight = (weight) => {
