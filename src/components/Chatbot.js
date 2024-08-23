@@ -19,7 +19,7 @@ const Chatbot = ({ rankings }) => {
       return;
     }
 
-    const apiKey = 'AIzaSyCGNPSILWN2lWLZ_lr-ZTua4V4kRIUDgo4'; // Hardcoded API Key
+    const apiKey = 'AIzaSyBPACYeOCfWLExbKVFd3r64IR3KhcVo-CQ'; // Hardcoded API Key
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
 
     const selectedCollegesData = selectedColleges.map(college => {
