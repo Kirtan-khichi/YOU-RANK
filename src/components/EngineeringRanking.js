@@ -285,7 +285,7 @@ const EngineeringRanking = ({ compareMode }) => {
       return;
     }
 
-    const apiKey = 'AIzaSyCGNPSILWN2lWLZ_lr-ZTua4V4kRIUDgo4'; // Replace with your actual API key
+    const apiKey = 'AIzaSyBPACYeOCfWLExbKVFd3r64IR3KhcVo-CQ'; // Replace with your actual API key
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
 
     const selectedCollegesData = selectedColleges.map(college => {
