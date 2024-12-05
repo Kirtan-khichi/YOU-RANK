@@ -36,7 +36,7 @@ const Home = () => {
       </div>
       <footer className="footer">
         <div style={{ textAlign: 'center' }}>
-          <p>We store the IP address of the user for curating statistics of choice of parameters. Data Source: NIRF 2023, Retraction Watch Database</p>
+          <p>Data Source: NIRF 2023, Retraction Watch Database</p>
         </div>
       </footer>
     </div>

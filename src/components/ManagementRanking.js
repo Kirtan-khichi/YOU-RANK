@@ -1,21 +1,33 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Papa from 'papaparse';
 import './styles.css';
-import ChartComponent from './ChartComponent';
 import sliderArrow from '../assets/slider_arrow.png';
+import SharePopover from './SharePopover';
+import ReactMarkdown from 'react-markdown';
+
+
 
 
 
 const initialParameters = {
   'Faculty Student Ratio': { weight: 0.3, max: 30 },
   'Faculty Quality': { weight: 0.30, max: 20 },
-  'Median Salary' : { weight: 0.2, max:40},
+  'Median Salary': { weight: 0.2, max: 40 },
   'Region Diversity': { weight: 0.1, max: 30 },
   'Woman diversity': { weight: 0.1, max: 30 },
   'Peer reputation': { weight: 0.1, max: 100 },
 };
 
-const ManagementRanking = () => {
+const maxValues = {
+  'Faculty Student Ratio': 30,
+  'Faculty Quality': 20,
+  'Median Salary': 40,
+  'Region Diversity': 30,
+  'Woman diversity': 30,
+  'Peer reputation': 100,
+}
+
+const ManagementRanking = ({ compareMode }) => {
   const [rankings, setRankings] = useState([]);
   const [parameters, setParameters] = useState(initialParameters);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
@@ -23,69 +35,44 @@ const ManagementRanking = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [sliderAnimation, setSliderAnimation] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCollegeData, setSelectedCollegeData] = useState(null);
-  const [additionalData, setAdditionalData] = useState([]);
-  const [tableScrollTop, setTableScrollTop] = useState(0);
+  const [selectedColleges, setSelectedColleges] = useState([]);
   const [selectedSortParam, setSelectedSortParam] = useState('');
-  const [selectedRankingParam, setSelectedRankingParam] = useState('');
-  const [selectedCollegeChartData, setSelectedCollegeChartData] = useState(null);
-  const [showAdditionalInfo, setShowAdditionalInfo] = useState(false); // New state to track additional info visibility
+  const [shareableURL, setShareableURL] = useState('');
+
+  const [chatbotOpen, setChatbotOpen] = useState(false);
+  const [chatbotContent, setChatbotContent] = useState('');
 
   const slidersRef = useRef(null);
   const tableRef = useRef(null);
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("data/rankingManagement2023.csv");
+        const text = await response.text();
+        const { data, errors } = Papa.parse(text, { header: true });
+        if (errors.length > 0) {
+          console.error('Error parsing CSV:', errors);
+        } else {
+          setRankings(data);
+
+          // Check if URL contains parameters
+          const urlParams = new URLSearchParams(window.location.search);
+          const id = urlParams.get('id');
+          if (id) {
+            const dehashedParams = dehashParams(id, maxValues);
+            setParameters(dehashedParams);
+            applyScores(dehashedParams, data);
+          } else {
+            applyScores(initialParameters, data);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching rankings:', error);
+      }
+    };
     fetchData();
-    // fetchAdditionalData();
-    checkIfMobile();
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
   }, []);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (tableRef.current) {
-        setTableScrollTop(tableRef.current.scrollTop);
-      }
-    };
-    if (tableRef.current) {
-      tableRef.current.addEventListener('scroll', handleScroll);
-    }
-    return () => {
-      if (tableRef.current) {
-        tableRef.current.removeEventListener('scroll', handleScroll);
-      }
-    };
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      const response = await fetch("data/rankingManagement2023.csv");
-      const text = await response.text();
-      const { data, errors } = Papa.parse(text, { header: true });
-      if (errors.length > 0) {
-        console.error('Error parsing CSV:', errors);
-      } else {
-        setRankings(data);
-      }
-    } catch (error) {
-      console.error('Error fetching rankings:', error);
-    }
-  };
-
-//   const fetchAdditionalData = async () => {
-//     try {
-//       const response = await fetch("data/MedicalStudentPdfData2023.csv");
-//       const text = await response.text();
-//       const { data, errors } = Papa.parse(text, { header: true });
-//       setAdditionalData(data);
-//     } catch (error) {
-//       console.error('Error fetching additional data:', error);
-//     }
-//   };
 
   const calculateScore = (ranking) => {
     let totalScore = 0;
@@ -109,59 +96,108 @@ const ManagementRanking = () => {
     return ((totalScore / totalWeight) * 100).toFixed(2);
   };
 
+  const calculateScoreWithParams = (ranking, params) => {
+    let totalScore = 0;
+    let totalWeight = 0;
+
+    for (const param in params) {
+      const weight = params[param]?.weight || 0;
+      const max = initialParameters[param] ? initialParameters[param].max : undefined;
+      const value = parseFloat(ranking[param]);
+
+      if (!isNaN(value) && weight !== undefined && max !== undefined) {
+        totalScore += (value / max) * weight;
+        totalWeight += weight;
+      }
+    }
+
+    if (totalWeight === 0) {
+      return 0;
+    }
+
+    return ((totalScore / totalWeight) * 100).toFixed(2);
+  };
+
+  const handleSortParamChange = (event) => {
+    const selectedParam = event.target.value;
+
+    if (selectedParam !== "") {
+      setSelectedSortParam(selectedParam);
+
+      const sortedRankings = [...rankings].sort((a, b) => b[selectedParam] - a[selectedParam]);
+
+      const rankedRankings = sortedRankings.map((ranking, index) => {
+        const value = ranking[selectedParam];
+        const max = initialParameters[selectedParam]?.max;
+        const total = (value / max) * 100;
+
+        return {
+          ...ranking,
+          yourrank: index + 1,
+          Total: total.toFixed(2),
+        };
+      });
+
+      setRankings(rankedRankings);
+    } else {
+      setSelectedSortParam("");
+      applyScores();
+    }
+  };
+
   const handleSliderChange = (param, value) => {
-    setParameters((prev) => ({
-      ...prev,
-      [param]: { ...prev[param], weight: parseFloat(value) },
+    setParameters((prevParameters) => ({
+      ...prevParameters,
+      [param]: {
+        ...prevParameters[param],
+        weight: parseFloat(value)
+      }
     }));
   };
 
-  const applyScores = async () => {
-    const updatedRankings = rankings.map((ranking) => ({
+  const applyScores = async (params = parameters, data = rankings) => {
+    const updatedRankings = data.map((ranking) => ({
       ...ranking,
-      Total: calculateScore(ranking),
+      Total: calculateScoreWithParams(ranking, params),
     }));
-  
+
     const sortedRankings = [...updatedRankings].sort((a, b) => b.Total - a.Total);
-  
+
     const rankedRankings = sortedRankings.map((ranking, index) => ({
       ...ranking,
       yourrank: index + 1,
     }));
-  
+
     setRankings(rankedRankings);
-    // console.log(rankedRankings);
-  
+
     setShowSliders(false);
     setSliderAnimation(false);
 
     const selectedParameters = {};
-    for (const [param, { weight }] of Object.entries(parameters)) {
+    for (const [param, { weight }] of Object.entries(params)) {
       selectedParameters[param] = weight;
     }
 
-
-    try { 
-      const response = await fetch('https://ach4l.pythonanywhere.com/urank_management', {
+    try {
+      const response = await fetch('https://ach4l.pythonanywhere.com/urank_med', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(selectedParameters), 
+        body: JSON.stringify(selectedParameters),
       });
-  
+
       if (!response.ok) {
         throw new Error('Failed to save scores to the database');
       }
-
-      const textData = await response.text();
-
     } catch (error) {
-      
       console.error('Error saving scores:', error);
     }
+
+    const shareableURL = generateShareableURL();
+    console.log('Shareable URL:', shareableURL);
   };
-  
+
   const requestSort = (key) => {
     let direction = 'ascending';
     if (sortConfig.key === key && sortConfig.direction === 'ascending') {
@@ -202,99 +238,157 @@ const ManagementRanking = () => {
     setSearchTerm(e.target.value);
   };
 
-  const handleClickOutside = (event) => {
-    if (slidersRef.current && !slidersRef.current.contains(event.target)) {
-      setShowSliders(false);
-      setSliderAnimation(false);
-    }
-  };
+  useEffect(() => {
+    checkIfMobile();
+    window.addEventListener("resize", checkIfMobile);
+    return () => {
+      window.removeEventListener("resize", checkIfMobile);
+    };
+  }, []);
 
-  const handleInfoButtonClick = async (collegeName) => {
-    // Find additional data for the selected college
-    const selectedData = additionalData.filter((item) => item.College === collegeName);
-    setSelectedCollegeData(selectedData);
-  
-    // Initialize an array to store chart data for each program
-    const chartDataArray = [];
-  
-    // Iterate over each row of additional data
-    selectedData.forEach((dataItem) => {
-      // Extract program name and data for the row
-      const programName = dataItem.Program;
-      const labels = Object.keys(dataItem).filter((key) => key.match(/^\d{4}-\d{2}$/));
-      const data = labels.map((label) => parseInt(dataItem[label], 10) || 0);
-  
-      // Reverse the order of labels and data for display
-      const reversedLabels = [...labels].reverse();
-      const reversedData = [...data].reverse();
-  
-      // Create chart data for the program
-      const chartData = {
-        labels: reversedLabels,
-        datasets: [
-          {
-            label: programName, // Program name as label
-            data: reversedData,
-            fill: false,
-            borderColor: 'rgb(75, 192, 192)',
-          },
-        ],
-      };
-  
-      // Push chart data for the program into the array
-      chartDataArray.push(chartData);
+  const handleCheckboxChange = (collegeName) => {
+    setSelectedColleges((prevSelectedColleges) => {
+      if (prevSelectedColleges.includes(collegeName)) {
+        return prevSelectedColleges.filter(name => name !== collegeName);
+      } else {
+        return [...prevSelectedColleges, collegeName];
+      }
     });
-  
-    // Update the state with the array of chart data
-    setSelectedCollegeChartData(chartDataArray);
-    setShowAdditionalInfo(true);
-  };
-  
-  
-  
-
-  const handleBackButtonClick = () => {
-    setShowAdditionalInfo(false);
   };
 
-  const handleSortParamChange = (event) => {
-    const selectedParam = event.target.value;
+  const handleCompareButtonClick = async () => {
+    if (selectedColleges.length < 2) {
+      alert('Please select at least two colleges to compare.');
+      return;
+    }
 
-    if (selectedParam !== "") {
-      setSelectedSortParam(selectedParam);
-      setSelectedRankingParam(selectedParam);
+    const apiKey = 'AIzaSyCGNPSILWN2lWLZ_lr-ZTua4V4kRIUDgo4'; // Replace with your actual API key
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
 
-      const sortedRankings = [...rankings].sort((a, b) => b[selectedParam] - a[selectedParam]);
+    const selectedCollegesData = selectedColleges.map(college => {
+      const collegeData = rankings.find(c => c.college === college);
+      return {
+        name: college,
+        Faculty_Student_Ratio: collegeData['Faculty Student Ratio'],
+        Faculty_Quality: collegeData['Faculty Quality'],
+        Region_Diversity: collegeData['Region Diversity'],
+        Woman_diversity: collegeData['Woman diversity'],
+        Peer_reputation: collegeData['Peer reputation'],
+        Rank: collegeData.Rank,
+        Score: collegeData.Score,
+        City: collegeData.City,
+        State: collegeData.State
+      };
+    });
 
-      const rankedRankings = sortedRankings.map((ranking, index) => {
-        const value = ranking[selectedParam];
-        const max = initialParameters[selectedParam]?.max;
-        const total = (value / max) * 100;
-        return {
-          ...ranking,
-          yourrank: index + 1,
-          Total: total.toFixed(2),
-        };
+    const requestData = {
+      contents: [
+        {
+          parts: [
+            {
+              text: `Compare the following colleges based on Faculty Student Ratio, Faculty Quality, Region Diversity, Woman diversity, Peer reputation, Rank, Score, City, State:\n${selectedCollegesData.map(college => `${college.name}, Faculty Student Ratio: ${college.Faculty_Student_Ratio}, Faculty Quality: ${college.Faculty_Quality}, Region Diversity: ${college.Region_Diversity}, Woman diversity: ${college.Woman_diversity}, Peer reputation: ${college.Peer_reputation}, Rank: ${college.Rank}, Score: ${college.Score}, City: ${college.City}, State: ${college.State}`).join('\n')}`
+            }
+          ]
+        }
+      ]
+    };
+
+    console.log('API Key:', apiKey);
+    console.log('API URL:', apiUrl);
+    console.log('Request Data:', JSON.stringify(requestData));
+
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
       });
 
-      setRankings(rankedRankings);
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Network response was not ok: ${response.statusText}, ${errorText}`);
+      }
+
+      const data = await response.json();
+      console.log('API Response:', JSON.stringify(data, null, 2));
+
+      if (
+        data &&
+        data.candidates &&
+        data.candidates.length > 0 &&
+        data.candidates[0].content &&
+        data.candidates[0].content.parts &&
+        data.candidates[0].content.parts.length > 0
+      ) {
+        const responseText = data.candidates[0].content.parts[0].text || 'No response text available';
+        setChatbotContent(responseText);
+        setChatbotOpen(true); // Open the chatbot with the comparison result
+      } else {
+        throw new Error('Response format is incorrect');
+      }
+    } catch (error) {
+      console.error('Error querying API:', error);
+      alert(`Sorry, something went wrong: ${error.message}`);
     }
+  };
+
+  const copyToClipboard = () => {
+    const shareableURL = generateShareableURL();
+    setShareableURL(shareableURL);
+    console.log(shareableURL, 'hiii');
+    navigator.clipboard.writeText(shareableURL)
+      .catch(error => console.error("Error copying link: ", error));
+  };
+
+  const generateShareableURL = () => {
+    const id = hashParams(parameters);
+    const baseUrl = window.location.origin + window.location.pathname;
+    return `${baseUrl}?id=${id}&category=Management`;
+  };
+
+  const formatWeight = (weight) => {
+    if (weight === 1) {
+      return "100"; // Special case for weight equal to 1
+    }
+    return Math.round(weight * 100).toString().padStart(2, '0').slice(0, 2);
+  };
+
+  const hashParams = (params) => {
+    let id = '';
+    for (const key of Object.keys(params)) {
+      id += formatWeight(params[key].weight) + ".";  // Convert weight to two digits and append comma
+    }
+    return id.slice(0, -1).padEnd(10, '0');  // Remove last comma and pad with zeros
+  };
+
+  const dehashParams = (id, maxValues) => {
+    const keys = Object.keys(maxValues);
+    const params = {};
+    const weights = id.split(".");
+    for (let i = 0; i < weights.length; i++) {
+      const weight = parseFloat((parseInt(weights[i], 10) / 100).toFixed(2));
+      const key = keys[i];
+      params[key] = { weight, max: maxValues[key] };
+    }
+    return params;
   };
 
   return (
     <div className={`overall-rankings`}>
       {isMobile && (
         <div className="show-sliders-mobile">
-          <button onClick={toggleSliders} className='button-text increase-width'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Change Parameters </b> &nbsp;<img src={sliderArrow} alt="" className="sliderarrow" />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
-        </div>
+        <button onClick={toggleSliders} className='button-text increase-width'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Change Parameters </b> &nbsp;<img src={sliderArrow} alt="" className="sliderarrow" />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
+      </div>
       )}
       {showSliders && (
         <div className={`sliders-container ${sliderAnimation ? 'show' : ''}`} ref={slidersRef}>
           <div className="sliders-overlay" onClick={toggleSliders}></div>
-          <button className="submit-button" onClick={applyScores}>
-              Calculate Score
-            </button>
+          <button className="submit-button" onClick={() => applyScores(parameters)}>
+            Calculate Score
+          </button>
           <div className="sliders-content">
             {Object.entries(initialParameters).map(([param, { weight, max }]) => (
               <div className="slider-item" key={param}>
@@ -328,7 +422,6 @@ const ManagementRanking = () => {
 
       {!isMobile && (
         <div className="sliders-content">
-          
           <h3 style={{ textAlign: 'center' }}>Choose your parameters</h3>
           {Object.entries(initialParameters).map(([param, { weight, max }]) => (
             <div className="slider-item" key={param}>
@@ -356,27 +449,14 @@ const ManagementRanking = () => {
               </div>
             </div>
           ))}
-          <button className="submit-button" onClick={applyScores}>
-              Calculate Score
-            </button>
+          <button className="submit-button" onClick={() => applyScores(parameters)}>
+            Calculate Score
+          </button>
         </div>
       )}
+
       <div className={`table-container${showSliders ? 'blur' : ''}`}>
-      {isMobile ? (
-        <a href="#sliders-content" onClick={toggleSliders}>
-          <h4 style={{ textAlign: 'center' }} className='disclaimer'>
-            <img src={sliderArrow} alt="" className="sliderarrow" style={{ transform: 'rotate(90deg)' }} />
-            Choose what's important for you
-          </h4> 
-        </a>
-      ) : (
-        <h4 style={{ textAlign: 'center' }}>Choose what's important for you 
-            <h6>*Data Source: NIRF 2023, Retraction Watch Database</h6>
-        </h4>
-      )}
-      
-       
-      <input
+        <input
           type="text"
           placeholder="Search college"
           value={searchTerm}
@@ -391,7 +471,7 @@ const ManagementRanking = () => {
             ))}
           </select>
         </div>
-        <div className="table-wrapper">
+        <div className="table-wrapper" ref={tableRef}>
           <table className="scroll-table">
             <thead>
               <tr>
@@ -411,11 +491,21 @@ const ManagementRanking = () => {
             </thead>
             <tbody>
               {sortedFilteredRankings.map((ranking, index) => (
-                <tr key={index}>
+                <tr key={ranking.college}>
                   <td style={{ textAlign: 'center' }}>{parseInt(ranking.Rank)}</td>
                   <td style={{ textAlign: 'center' }}>{parseInt(ranking.yourrank) || "-"}</td>
-                  <td style={{ position: 'relative', textAlign: 'center' }}>{ranking.college}
-
+                  <td style={{ position: 'relative', textAlign: 'left' }}>
+                    {compareMode && (
+                      <label className="custom-checkbox" style={{ marginRight: '10px' }}>
+                        <input
+                          type="checkbox"
+                          checked={selectedColleges.includes(ranking.college)}
+                          onChange={() => handleCheckboxChange(ranking.college)}
+                        />
+                        <span className="checkmark"></span>
+                      </label>
+                    )}
+                    {ranking.college}
                   </td>
                   <td style={{ textAlign: 'center' }}>{ranking.Total || "-"}</td>
                 </tr>
@@ -423,15 +513,31 @@ const ManagementRanking = () => {
             </tbody>
           </table>
         </div>
-      </div>
-      {showAdditionalInfo && (
-        <div className="additional-info-modal" style={{ top: `calc(200px + ${tableScrollTop}px)` }}>
-          <button className="backButton" onClick={handleBackButtonClick}>
-            <span style={{ fontSize: '24px' }}>&larr;</span> Back
+        {compareMode && (
+          <div className="floating-compare-button">
+          <button className="compare-button" onClick={handleCompareButtonClick}>
+            Compare Selected Colleges
           </button>
-          <ChartComponent chartData={selectedCollegeChartData}/>
+          </div>
+        )}
+
+        {chatbotOpen && (
+          <div className="chatbot-container">
+            <div className="chatbot-header">
+              <span>Comparison Result</span>
+              <button onClick={() => setChatbotOpen(false)} className="close-chatbot">X</button>
+            </div>
+            <div className="chatbot-content">
+              <div className="message">
+                <ReactMarkdown>{chatbotContent}</ReactMarkdown>
+              </div>
+            </div>
+          </div>
+        )}
+        <div className="floating-share-button" onClick={copyToClipboard}>
+          <SharePopover shareableURL={shareableURL} message={'Check out this management ranking:'} />
         </div>
-      )}
+      </div>
     </div>
   );
 };
